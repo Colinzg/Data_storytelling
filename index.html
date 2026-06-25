@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>这一夜，我们家都没有睡好 —— 一个中国家庭的睡眠叙事</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* ============ CSS Variables ============ */
+        :root {
+            --night-900: #0a0e1a;
+            --night-800: #0d1428;
+            --night-700: #111d3a;
+            --night-600: #162544;
+            --night-500: #1b3054;
+            --night-400: #243d65;
+            --warm-400: #f5d67b;
+            --warm-300: #f7e09e;
+            --warm-200: #faebc3;
+            --warm-100: #fdf5e0;
+            --accent-blue: #5b8def;
+            --accent-teal: #6ec6ca;
+            --text-light: #c8d6e5;
+            --text-muted: #8a9bb5;
+            --text-bright: #e8eef5;
+            --card-bg: rgba(22, 37, 68, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --transition: 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        /* ============ Reset & Base ============ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', -apple-system, sans-serif;
+            background: var(--night-900);
+            color: var(--text-light);
+            line-height: 1.8;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--night-800); }
+        ::-webkit-scrollbar-thumb { background: var(--night-400); border-radius: 3px; }
+
+        /* ============ Typography ============ */
+        h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; line-height: 1.3; }
+        h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 600; }
+        h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 500; }
+        .text-warm { color: var(--warm-400); }
+        .text-accent { color: var(--accent-blue); }
+        .text-muted { color: var(--text-muted); }
+
+        /* ============ Cover Section ============ */
+        .cover {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(ellipse at center, var(--night-700) 0%, var(--night-900) 70%);
+            overflow: hidden;
+        }
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background:
+                radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1.5px 1.5px at 60% 20%, rgba(255,255,255,0.25), transparent),
+                radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1.5px 1.5px at 10% 80%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 70% 90%, rgba(255,255,255,0.15), transparent),
+                radial-gradient(1px 1px at 30% 10%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.25), transparent);
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        .cover-content { position: relative; z-index: 1; max-width: 800px; }
+        .cover h1 { color: var(--warm-400); margin-bottom: 1.5rem; }
+        .cover .subtitle {
+            font-size: 1.2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.5rem; margin-top: 1rem;
+        }
+        .cover .data-hook {
+            display: inline-block;
+            background: rgba(245,214,123,0.1);
+            border: 1px solid rgba(245,214,123,0.25);
+            border-radius: 24px;
+            padding: 0.6rem 1.8rem;
+            margin: 2rem 0;
+            font-size: 1.05rem;
+            color: var(--warm-300);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(245,214,123,0.1); }
+            50% { box-shadow: 0 0 24px rgba(245,214,123,0.2); }
+        }
+        .scroll-indicator {
+            position: absolute; bottom: 2rem;
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            color: var(--text-muted); font-size: 0.85rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+        .scroll-indicator svg { width: 24px; height: 24px; }
+
+        /* ============ Scene Sections (General) ============ */
+        .scene {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+        .scene-inner {
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .scene-inner.reverse { direction: rtl; }
+        .scene-inner.reverse > * { direction: ltr; }
+
+        /* ============ Scene Visual (Left Panel) ============ */
+        .scene-visual {
+            position: relative;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .illustration-box {
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .time-tag {
+            position: absolute;
+            top: 16px; left: 16px;
+            background: var(--warm-400);
+            color: var(--night-900);
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            z-index: 2;
+            letter-spacing: 1px;
+        }
+        .character-label {
+            position: absolute;
+            bottom: 16px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            color: var(--text-bright);
+            font-size: 0.9rem;
+            padding: 0.3rem 1rem;
+            border-radius: 16px;
+            white-space: nowrap;
+        }
+
+        /* ============ Scene Text (Right Panel) ============ */
+        .scene-text { max-width: 480px; }
+        .scene-text h2 { color: var(--warm-400); margin-bottom: 1rem; }
+        .scene-text .quote {
+            font-size: 1.1rem;
+            color: var(--warm-200);
+            font-style: italic;
+            border-left: 3px solid var(--warm-400);
+            padding-left: 1rem;
+            margin: 1.2rem 0;
+        }
+        .scene-text .narration { color: var(--text-light); margin-bottom: 1rem; font-size: 1.05rem; }
+        .conflict-tag {
+            display: inline-block;
+            background: rgba(91,141,239,0.15);
+            border: 1px solid rgba(91,141,239,0.3);
+            border-radius: 16px;
+            padding: 0.3rem 1rem;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        /* ============ Data Card ============ */
+        .data-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin-top: 1rem;
+        }
+        .data-card .data-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--warm-400);
+            display: block;
+        }
+        .data-card .data-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .data-card .data-source {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+        .data-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .data-row .data-card { flex: 1; min-width: 140px; margin-top: 0; }
+
+        /* ============ Chart Container ============ */
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            position: relative;
+            height: 300px;
+        }
+        .chart-container canvas { width: 100% !important; height: 100% !important; }
+
+        /* ============ Transition Lines ============ */
+        .transition-line {
+            text-align: center;
+            padding: 3rem 2rem;
+            font-size: 1.3rem;
+            color: var(--warm-300);
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .transition-line::before,
+        .transition-line::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--warm-400), transparent);
+            margin: 1rem auto;
+        }
+
+        /* ============ Opening: Family Intro ============ */
+        .family-intro {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .family-intro h2 { color: var(--warm-400); text-align: center; margin-bottom: 3rem; }
+        .character-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            max-width: 1100px;
+            width: 100%;
+        }
+        .char-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform var(--transition), box-shadow var(--transition);
+            cursor: default;
+        }
+        .char-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        }
+        .char-card .char-icon {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: rgba(245,214,123,0.15);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.8rem;
+        }
+        .char-card .char-name { color: var(--warm-400); font-weight: 600; font-size: 1.1rem; }
+        .char-card .char-role { color: var(--text-muted); font-size: 0.85rem; margin: 0.3rem 0; }
+        .char-card .char-issue { color: var(--accent-blue); font-size: 0.85rem; margin-top: 0.5rem; }
+
+        /* ============ Act Backgrounds ============ */
+        .scene-act-1 { background: linear-gradient(180deg, var(--night-900) 0%, #0f1a2e 100%); }
+        .scene-act-2 { background: linear-gradient(180deg, #0f1a2e 0%, #111e35 100%); }
+        .scene-act-3 { background: linear-gradient(180deg, #111e35 0%, #0e182b 100%); }
+        .scene-act-4 { background: linear-gradient(180deg, #0e182b 0%, #162040 100%); }
+        .scene-act-5 { background: linear-gradient(180deg, #162040 0%, #1a2848 100%); }
+
+        /* ============ Morning / Ending ============ */
+        .scene-final {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(180deg, #1a2848 0%, #1e3058 30%, #243d65 60%, var(--night-900) 100%);
+            text-align: center;
+        }
+        .final-text { max-width: 700px; }
+        .final-text h2 { color: var(--warm-400); margin-bottom: 2rem; }
+        .final-text .poem-line {
+            font-size: 1.15rem;
+            color: var(--text-bright);
+            margin: 0.4rem 0;
+        }
+        .final-text .poem-line.warm { color: var(--warm-400); }
+
+        /* ============ Data Source Footer ============ */
+        .footer {
+            background: var(--night-900);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--card-border);
+        }
+        .footer-inner { max-width: 900px; margin: 0 auto; }
+        .footer h3 { color: var(--text-muted); margin-bottom: 1rem; }
+        .footer .source-list {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            opacity: 0.8;
+        }
+        .footer .source-list li {
+            padding: 0.3rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        /* ============ Animations ============ */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ============ Responsive ============ */
+        @media (max-width: 768px) {
+            .scene-inner {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .scene-inner.reverse { direction: ltr; }
+            .scene-visual { order: -1; }
+            .illustration-box { max-width: 300px; aspect-ratio: 1; }
+            .scene { padding: 3rem 1.2rem; min-height: auto; }
+            .character-cards { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+            .data-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== COVER ==================== -->
+    <section class="cover">
+        <div class="cover-content fade-in">
+            <div class="data-hook">《2025年中国睡眠健康调查报告》：我国成年人睡眠困扰率已达 48.5%</div>
+            <h1>这一夜，<br>我们家都没有睡好</h1>
+            <p class="subtitle">
+                原来睡不好，发生在每一代人身上<br>
+                只是原因不同
+            </p>
+        </div>
+        <div class="scroll-indicator">
+            <span>向下滚动，走进这个夜晚</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ==================== OPENING: Family Introduction ==================== -->
+    <section class="family-intro fade-in">
+        <h2>🏠 今晚，他们准备睡觉了</h2>
+        <div class="character-cards">
+            <div class="char-card">
+                <div class="char-icon">👵</div>
+                <div class="char-name">外婆</div>
+                <div class="char-role">67岁 · 退休</div>
+                <div class="char-issue">早醒 · 失眠 · 浅睡眠</div>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👨</div>
+                <div class="char-name">父亲</div>
+                <div class="char-role">45岁 · 公司中层</div>
+                <div class="char-issue">加班 · 压力 · 睡眠不足</div>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👩</div>
+                <div class="char-name">母亲</div>
+                <div class="char-role">42岁 · 教师</div>
+                <div class="char-issue">家庭与工作双重负担</div>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👦</div>
+                <div class="char-name">儿子</div>
+                <div class="char-role">16岁 · 高中生</div>
+                <div class="char-issue">学业压力 · 晚自习</div>
+            </div>
+            <div class="char-card">
+                <div class="char-icon">👧</div>
+                <div class="char-name">姐姐</div>
+                <div class="char-role">21岁 · 大学生</div>
+                <div class="char-issue">报复性熬夜 · 手机依赖</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transition -->
+    <div class="transition-line fade-in">
+        这是一个再普通不过的夜晚。<br>
+        中国居民平均睡眠时间，正在持续下降。
+    </div>
+
+    <!-- Chart: Sleep Trend -->
+    <div class="fade-in" style="max-width:700px; margin: 0 auto 2rem; padding: 0 2rem;">
+        <div class="chart-container" style="height:320px;">
+            <canvas id="chartSleepTrend"></canvas>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+            数据来源：北京大学中国家庭追踪调查（CFPS）
+        </p>
+    </div>
+
+    <!-- ==================== ACT 1: Son 23:30 ==================== -->
+    <section class="scene scene-act-1 fade-in">
+        <div class="scene-inner">
+            <!-- Visual -->
+            <div class="scene-visual">
+                <div class="illustration-box" id="illu-son">
+                    <div class="time-tag">23:30</div>
+                    <svg width="100%" height="100%" viewBox="0 0 400 400" style="position:absolute;top:0;left:0;">
+                        <!-- Room background -->
+                        <rect width="400" height="400" fill="#0f1c33" rx="20"/>
+                        <!-- Window with moonlight -->
+                        <rect x="50" y="40" width="100" height="130" rx="8" fill="#1a3050" stroke="#2a4560" stroke-width="2"/>
+                        <circle cx="120" cy="80" r="20" fill="rgba(245,214,123,0.3)"/>
+                        <!-- Desk -->
+                        <rect x="200" y="160" width="160" height="10" rx="3" fill="#3a2a1a"/>
+                        <!-- Lamp glow -->
+                        <ellipse cx="280" cy="220" rx="70" ry="90" fill="rgba(245,214,123,0.06)"/>
+                        <rect x="265" y="140" width="30" height="25" rx="4" fill="#f5d67b" opacity="0.9"/>
+                        <!-- Figure hunched over desk -->
+                        <ellipse cx="280" cy="190" rx="25" ry="30" fill="#1e3050" stroke="#2a4560" stroke-width="1.5"/>
+                        <!-- Books/papers -->
+                        <rect x="220" y="155" width="50" height="4" rx="1" fill="#4a5a70" opacity="0.6"/>
+                        <rect x="230" y="150" width="40" height="3" rx="1" fill="#5a6a80" opacity="0.5"/>
+                        <!-- Clock on wall -->
+                        <circle cx="310" cy="65" r="22" fill="#1a2840" stroke="#2a4560" stroke-width="1.5"/>
+                        <line x1="310" y1="65" x2="310" y2="53" stroke="#f5d67b" stroke-width="2"/>
+                        <line x1="310" y1="65" x2="322" y2="65" stroke="#f5d67b" stroke-width="1.5"/>
+                    </svg>
+                    <div class="character-label">儿子 · 16岁 · 高中生</div>
+                </div>
+            </div>
+            <!-- Text -->
+            <div class="scene-text">
+                <div class="conflict-tag">⚡ 身体 vs 未来</div>
+                <h2>第一幕：睡眠被"未来"压缩</h2>
+                <p class="narration">
+                    明天考试，还剩一张卷子。<br>
+                    儿子愣住——明明已经很困了，还是拿出了第二套卷子和笔记。<br>
+                    台灯一直亮着，他想睡，但是不敢睡。
+                </p>
+                <p class="quote">有人熬夜，是为了追赶未来。</p>
+                <div class="data-row">
+                    <div class="data-card">
+                        <span class="data-number">80%</span>
+                        <span class="data-label">13-17岁青少年睡眠不足8小时</span>
+                    </div>
+                    <div class="data-card">
+                        <span class="data-number">6.5h</span>
+                        <span class="data-label">高中生平均睡眠时长</span>
+                    </div>
+                </div>
+                <div class="data-card">
+                    <span class="data-label">课业压力是青少年睡眠不足的首要原因</span>
+                    <div class="data-source">来源：《2025中国睡眠健康研究白皮书》</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chart: Student Sleep -->
+    <div class="fade-in" style="max-width:700px; margin: 0 auto 2rem; padding: 0 2rem;">
+        <div class="chart-container" style="height:300px;">
+            <canvas id="chartStudentSleep"></canvas>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+            数据来源：国家卫健委《健康中国行动》推荐标准 vs 实际调查数据
+        </p>
+    </div>
+
+    <!-- Transition -->
+    <div class="transition-line fade-in">
+        有人不睡，不是不困，而是不想结束今天。
+    </div>
+
+    <!-- ==================== ACT 2: Daughter 00:20 ==================== -->
+    <section class="scene scene-act-2 fade-in">
+        <div class="scene-inner reverse">
+            <!-- Visual -->
+            <div class="scene-visual">
+                <div class="illustration-box" id="illu-daughter">
+                    <div class="time-tag">00:20</div>
+                    <svg width="100%" height="100%" viewBox="0 0 400 400" style="position:absolute;top:0;left:0;">
+                        <rect width="400" height="400" fill="#111e35" rx="20"/>
+                        <!-- Bed -->
+                        <rect x="80" y="250" width="260" height="20" rx="6" fill="#2a2040"/>
+                        <rect x="80" y="230" width="260" height="25" rx="10" fill="#3a3050"/>
+                        <!-- Pillow area -->
+                        <ellipse cx="140" cy="240" rx="40" ry="12" fill="#4a3a60"/>
+                        <!-- Phone glow on face - key visual -->
+                        <ellipse cx="200" cy="180" rx="90" ry="70" fill="rgba(91,141,239,0.08)"/>
+                        <rect x="160" y="140" width="75" height="120" rx="8" fill="#1e2a40" stroke="#2a4560" stroke-width="1.5"/>
+                        <!-- Phone screen content hints -->
+                        <rect x="168" y="150" width="59" height="30" rx="3" fill="rgba(245,214,123,0.2)"/>
+                        <rect x="168" y="185" width="59" height="8" rx="2" fill="rgba(200,200,220,0.15)"/>
+                        <rect x="168" y="198" width="40" height="8" rx="2" fill="rgba(200,200,220,0.1)"/>
+                        <rect x="168" y="211" width="50" height="8" rx="2" fill="rgba(200,200,220,0.12)"/>
+                        <rect x="168" y="224" width="35" height="8" rx="2" fill="rgba(200,200,220,0.1)"/>
+                        <!-- Time display -->
+                        <text x="200" y="270" text-anchor="middle" fill="#f5d67b" font-size="16" font-family="monospace">01:30</text>
+                    </svg>
+                    <div class="character-label">姐姐 · 21岁 · 大学生</div>
+                </div>
+            </div>
+            <!-- Text -->
+            <div class="scene-text">
+                <div class="conflict-tag">⚡ 困意 vs 自由</div>
+                <h2>第二幕：报复性熬夜</h2>
+                <p class="narration">
+                    "再刷五分钟。"<br>
+                    她说。然后——知乎、小红书、抖音、朋友圈……<br>
+                    时间来到了凌晨一点半，她自己也不知道时间怎么过去的。
+                </p>
+                <p class="quote">白天失去的自由，在深夜讨回来。</p>
+                <div class="data-row">
+                    <div class="data-card">
+                        <span class="data-number">25%</span>
+                        <span class="data-label">大学生凌晨2点后入睡</span>
+                    </div>
+                    <div class="data-card">
+                        <span class="data-number">39%</span>
+                        <span class="data-label">每天使用手机超过8小时</span>
+                    </div>
+                </div>
+                <div class="data-card">
+                    <span class="data-label">手机使用越久，入睡越晚</span>
+                    <div class="data-source">来源：《2025中国睡眠健康研究白皮书》</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chart: Night Owl Reasons -->
+    <div class="fade-in" style="max-width:700px; margin: 0 auto 2rem; padding: 0 2rem;">
+        <div class="chart-container" style="height:300px;">
+            <canvas id="chartNightOwlReasons"></canvas>
+        </div>
+    </div>
+
+    <!-- Transition -->
+    <div class="transition-line fade-in">
+        有人不睡，不是不困，而是不想结束今天。
+    </div>
+
+    <!-- ==================== ACT 3: Parents 01:10 ==================== -->
+    <section class="scene scene-act-3 fade-in">
+        <div class="scene-inner">
+            <!-- Visual -->
+            <div class="scene-visual">
+                <div class="illustration-box" id="illu-parents">
+                    <div class="time-tag">01:10</div>
+                    <svg width="100%" height="100%" viewBox="0 0 400 400" style="position:absolute;top:0;left:0;">
+                        <rect width="400" height="400" fill="#0e182b" rx="20"/>
+                        <!-- Split: left father study, right mother bed -->
+                        <line x1="200" y1="40" x2="200" y2="360" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <!-- Father side -->
+                        <rect x="30" y="100" width="140" height="90" rx="6" fill="#1a2840" stroke="#2a4560" stroke-width="1"/>
+                        <!-- Computer screen glow -->
+                        <rect x="55" y="115" width="90" height="60" rx="3" fill="#1e3050" stroke="#3a5070" stroke-width="1"/>
+                        <rect x="60" y="120" width="80" height="50" rx="2" fill="rgba(91,141,239,0.12)"/>
+                        <!-- Father figure -->
+                        <ellipse cx="100" cy="210" rx="30" ry="35" fill="#1a2840" stroke="#2a4560" stroke-width="1.5"/>
+                        <text x="100" y="280" text-anchor="middle" fill="#8a9bb5" font-size="10">工作群消息…</text>
+                        <!-- Mother side -->
+                        <rect x="230" y="160" width="140" height="90" rx="6" fill="#1a2840" stroke="#2a4560" stroke-width="1"/>
+                        <!-- Bed -->
+                        <rect x="230" y="230" width="140" height="8" rx="3" fill="#2a2040"/>
+                        <!-- Mother figure lying -->
+                        <ellipse cx="300" cy="200" rx="40" ry="20" fill="#1a2840" stroke="#2a4560" stroke-width="1.5"/>
+                        <!-- Thought bubbles -->
+                        <circle cx="280" cy="165" r="3" fill="rgba(255,255,255,0.1)"/>
+                        <circle cx="270" cy="150" r="5" fill="rgba(255,255,255,0.08)"/>
+                        <circle cx="255" cy="130" r="8" fill="rgba(255,255,255,0.05)"/>
+                        <text x="240" y="125" fill="#8a9bb5" font-size="8">明天孩子早餐…</text>
+                    </svg>
+                    <div class="character-label">父亲 · 45岁 & 母亲 · 42岁</div>
+                </div>
+            </div>
+            <!-- Text -->
+            <div class="scene-text">
+                <div class="conflict-tag">⚡ 健康 vs 生存 &nbsp;|&nbsp; ⚡ 困意 vs 责任</div>
+                <h2>第三幕：睡眠被责任打断</h2>
+                <p class="narration">
+                    <strong>父亲：</strong>电脑没关，还在回消息。公司群突然弹出："客户方案有修改"——凌晨一点，书房里只剩下电脑蓝光。<br><br>
+                    <strong>母亲：</strong>刚躺下，脑子还在转：儿子要考试了、早餐的牛奶还没买、外婆的药快吃完了……工作结束了，责任没有结束。
+                </p>
+                <p class="quote">成年人的困意，总输给责任。</p>
+                <div class="data-row">
+                    <div class="data-card">
+                        <span class="data-number">6h44m</span>
+                        <span class="data-label">35-45岁平均睡眠最短</span>
+                    </div>
+                    <div class="data-card">
+                        <span class="data-number">51.1%</span>
+                        <span class="data-label">女性睡眠困扰率 > 男性（45.9%）</span>
+                    </div>
+                </div>
+                <div class="data-card">
+                    <span class="data-label">💡 女性"隐形劳动"——家务、育儿、情感管理持续侵占睡眠时间。很多研究不会想到这一层。</span>
+                    <div class="data-source">来源：《2025中国睡眠健康研究白皮书》</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chart: Gender Sleep Gap -->
+    <div class="fade-in" style="max-width:700px; margin: 0 auto 2rem; padding: 0 2rem;">
+        <div class="chart-container" style="height:300px;">
+            <canvas id="chartGenderGap"></canvas>
+        </div>
+    </div>
+
+    <!-- Transition -->
+    <div class="transition-line fade-in">
+        成年人的困意，总输给责任。
+    </div>
+
+    <!-- ==================== ACT 4: Grandmother 04:50 ==================== -->
+    <section class="scene scene-act-4 fade-in">
+        <div class="scene-inner reverse">
+            <!-- Visual -->
+            <div class="scene-visual">
+                <div class="illustration-box" id="illu-grandma">
+                    <div class="time-tag">04:50</div>
+                    <svg width="100%" height="100%" viewBox="0 0 400 400" style="position:absolute;top:0;left:0;">
+                        <rect width="400" height="400" fill="#112030" rx="20"/>
+                        <!-- Dawn window -->
+                        <rect x="100" y="30" width="200" height="150" rx="8" fill="#1a2a40" stroke="#2a4560" stroke-width="1.5"/>
+                        <!-- Faint dawn light -->
+                        <rect x="100" y="30" width="200" height="60" rx="8" fill="rgba(245,214,123,0.04)"/>
+                        <!-- Kitchen counter -->
+                        <rect x="40" y="240" width="320" height="10" rx="3" fill="#3a2a1a"/>
+                        <!-- Kettle -->
+                        <rect x="280" y="200" width="40" height="45" rx="5" fill="#2a3050" stroke="#3a4560" stroke-width="1"/>
+                        <ellipse cx="300" cy="200" rx="15" ry="5" fill="#3a4060"/>
+                        <!-- Steam -->
+                        <path d="M290 195 Q285 180 295 170" stroke="rgba(255,255,255,0.08)" stroke-width="2" fill="none"/>
+                        <!-- Grandmother figure -->
+                        <ellipse cx="170" cy="210" rx="28" ry="35" fill="#1a2835" stroke="#2a4050" stroke-width="1.5"/>
+                        <!-- Cup -->
+                        <rect x="150" y="225" width="20" height="18" rx="3" fill="#2a3a50"/>
+                        <!-- Sofa silhouette -->
+                        <rect x="50" y="310" width="180" height="40" rx="15" fill="#151e2a" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    </svg>
+                    <div class="character-label">外婆 · 67岁 · 退休</div>
+                </div>
+            </div>
+            <!-- Text -->
+            <div class="scene-text">
+                <div class="conflict-tag">🌅 情绪沉淀段</div>
+                <h2>第四幕：被年龄叫醒</h2>
+                <p class="narration">
+                    外婆醒了。现在是整个家里最安静的时候。<br>
+                    她睁开眼睛看向窗外，天还没亮。<br>
+                    她缓缓起床，烧水，吃药。静坐在沙发上，没有开灯。<br><br>
+                    路过儿子房间，灯还亮着；书房里，电脑也还开着。<br>
+                    她发现：原来不止自己睡不好。
+                </p>
+                <p class="quote">她并不是不想睡，只是身体比天亮得更早。</p>
+                <div class="data-row">
+                    <div class="data-card">
+                        <span class="data-number">39%</span>
+                        <span class="data-label">老年人每晚醒来2次及以上</span>
+                    </div>
+                    <div class="data-card">
+                        <span class="data-number">↑</span>
+                        <span class="data-label">年龄增长→睡眠困扰率持续上升</span>
+                    </div>
+                </div>
+                <div class="data-card">
+                    <span class="data-label">夜醒和早醒是老年群体最主要的睡眠问题</span>
+                    <div class="data-source">来源：《2024年中国睡眠指数报告》</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transition -->
+    <div class="transition-line fade-in">
+        她以为失眠是年龄的问题，后来发现，每个人都在和睡眠较劲。
+    </div>
+
+    <!-- ==================== ACT 5: Morning 07:00 ==================== -->
+    <section class="scene scene-act-5 fade-in">
+        <div class="scene-inner">
+            <!-- Visual -->
+            <div class="scene-visual">
+                <div class="illustration-box" id="illu-morning">
+                    <div class="time-tag">07:00</div>
+                    <svg width="100%" height="100%" viewBox="0 0 400 400" style="position:absolute;top:0;left:0;">
+                        <rect width="400" height="400" fill="#1a2848" rx="20"/>
+                        <!-- Morning light from window -->
+                        <rect x="60" y="30" width="120" height="140" rx="8" fill="#2a4060" stroke="#3a5570" stroke-width="1.5"/>
+                        <rect x="60" y="30" width="120" height="80" rx="8" fill="rgba(245,214,123,0.08)"/>
+                        <!-- Dining table -->
+                        <rect x="80" y="230" width="260" height="12" rx="4" fill="#3a2a1a"/>
+                        <!-- Bowls -->
+                        <ellipse cx="140" cy="225" rx="22" ry="6" fill="#2a3040"/>
+                        <ellipse cx="210" cy="225" rx="22" ry="6" fill="#2a3040"/>
+                        <ellipse cx="280" cy="225" rx="22" ry="6" fill="#2a3040"/>
+                        <!-- Family figures around table -->
+                        <ellipse cx="120" cy="200" rx="20" ry="25" fill="#1a2835" stroke="#2a4060" stroke-width="1"/> <!-- grandma -->
+                        <ellipse cx="180" cy="195" rx="22" ry="28" fill="#1a2835" stroke="#2a4060" stroke-width="1"/> <!-- father -->
+                        <ellipse cx="240" cy="195" rx="20" ry="25" fill="#1a2835" stroke="#2a4060" stroke-width="1"/> <!-- mother -->
+                        <ellipse cx="300" cy="200" rx="18" ry="22" fill="#1a2835" stroke="#2a4060" stroke-width="1"/> <!-- son -->
+                        <ellipse cx="350" cy="198" rx="18" ry="22" fill="#1a2835" stroke="#2a4060" stroke-width="1"/> <!-- daughter -->
+                        <!-- Coffee cup -->
+                        <rect x="160" y="208" width="12" height="14" rx="3" fill="#2a3040"/>
+                    </svg>
+                    <div class="character-label">早餐桌 · 全家</div>
+                </div>
+            </div>
+            <!-- Text -->
+            <div class="scene-text">
+                <h2>第五幕：全家醒来</h2>
+                <p class="narration">
+                    一家人都醒了，但都没睡好。<br>
+                    儿子打哈欠、女儿看手机、父亲喝咖啡、母亲发呆、外婆默默盛粥。<br><br>
+                    电视里再次响起播报：<br>
+                    "中国成年人平均睡眠时长约7小时，睡眠困扰率接近一半。"<br><br>
+                    这一次，没有人再觉得这只是新闻。<br>
+                    <strong>因为他们都在新闻之中。</strong>
+                </p>
+                <div class="data-card" style="margin-top:0;">
+                    <span class="data-number">7h</span>
+                    <span class="data-label">中国成年人平均睡眠时长，睡眠困扰率接近50%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FINALE ==================== -->
+    <section class="scene-final fade-in">
+        <div class="final-text">
+            <h2>同一个屋檐下，每个人都在失眠。</h2>
+            <p style="color:var(--text-muted); margin-bottom:2rem;">只是偷走睡眠的东西，不一样。</p>
+
+            <div class="poem-line">有人输给<span class="text-warm"> 压力</span>，</div>
+            <div class="poem-line">有人输给<span class="text-accent"> 屏幕</span>，</div>
+            <div class="poem-line">有人输给<span class="text-warm"> 责任</span>，</div>
+            <div class="poem-line">有人输给<span class="text-accent"> 年龄</span>。</div>
+
+            <p style="margin-top:3rem; color:var(--text-muted); line-height:2;">
+                大多数关于睡眠的数据，<br>
+                都在统计：几点睡、睡多久、醒几次。<br><br>
+                但数据背后，<br>
+                是一个个无法按时休息的人。<br><br>
+                也许，真正值得被重新审视的，<br>
+                不是<strong class="text-warm">"为什么睡不好"</strong>，<br>
+                而是<strong class="text-warm">我们究竟在过怎样的生活</strong>。
+            </p>
+        </div>
+    </section>
+
+    <!-- ==================== DATA SUMMARY SECTION ==================== -->
+    <section class="fade-in" style="max-width:900px; margin: 3rem auto; padding: 2rem;">
+        <h2 style="color:var(--warm-400); text-align:center; margin-bottom:2rem;">📊 数据总览：中国居民睡眠画像</h2>
+        <div class="data-row" style="margin-bottom:1.5rem;">
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">48.5%</span>
+                <span class="data-label">成年人睡眠困扰率</span>
+            </div>
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">7h</span>
+                <span class="data-label">中国人均睡眠时长</span>
+            </div>
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">51.1%</span>
+                <span class="data-label">女性睡眠困扰率</span>
+            </div>
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">39%</span>
+                <span class="data-label">老年人夜醒≥2次</span>
+            </div>
+        </div>
+        <!-- Sleep quality by age chart -->
+        <div class="chart-container" style="height:350px;">
+            <canvas id="chartAgeSleep"></canvas>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+            数据来源：《2024年中国睡眠指数报告》《2025中国睡眠健康研究白皮书》
+        </p>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <h3>📚 数据来源</h3>
+            <ul class="source-list">
+                <li>国家卫健委《健康中国行动（2019-2030年）》—— 各年龄段推荐睡眠时间</li>
+                <li>北京大学中国社会科学调查中心 · 中国家庭追踪调查（CFPS）—— 中国人睡眠变化趋势</li>
+                <li>中国睡眠研究会、华为运动健康《2025中国睡眠健康研究白皮书》—— 基于超15万用户数据</li>
+                <li>喜临门睡眠研究院、中国社会科学院社会学研究所《2024年中国睡眠指数报告》—— 6586人样本</li>
+                <li>喜临门睡眠研究院《不同就业类型群体的睡眠状况》《中等收入群体睡眠研究报告》</li>
+                <li>瑞思迈 ResMed《2026年全球睡眠调查》</li>
+            </ul>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:2rem; text-align:center; opacity:0.6;">
+                数据叙事作品 · 设计与开发：小组项目 · 2025年6月
+            </p>
+        </div>
+    </footer>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script>
+    // ======== Intersection Observer for Fade-in Animations ========
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ======== Chart.js Global Config ========
+    Chart.defaults.color = '#8a9bb5';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.08)';
+    Chart.defaults.font.family = "'PingFang SC','Microsoft YaHei',sans-serif";
+
+    // ======== Chart 1: Sleep Trend Over Years ========
+    new Chart(document.getElementById('chartSleepTrend'), {
+        type: 'line',
+        data: {
+            labels: ['2010','2012','2014','2016','2018','2020','2022','2024'],
+            datasets: [{
+                label: '中国人均睡眠时长（小时）',
+                data: [8.3, 8.1, 7.9, 7.7, 7.5, 7.3, 7.1, 7.0],
+                borderColor: '#f5d67b',
+                backgroundColor: 'rgba(245,214,123,0.08)',
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#f5d67b',
+                pointRadius: 5,
+                pointHoverRadius: 8,
+            }, {
+                label: 'WHO推荐成人睡眠（小时）',
+                data: [8, 8, 8, 8, 8, 8, 8, 8],
+                borderColor: 'rgba(110,198,202,0.5)',
+                borderDash: [8, 4],
+                borderWidth: 1.5,
+                fill: false,
+                pointRadius: 0,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: '中国居民平均睡眠时间持续下降', color: '#f5d67b', font: { size: 15 } },
+                legend: { labels: { usePointStyle: true, padding: 20 } }
+            },
+            scales: {
+                y: { min: 6, max: 9, ticks: { callback: v => v + 'h' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // ======== Chart 2: Student Sleep vs Recommended ========
+    new Chart(document.getElementById('chartStudentSleep'), {
+        type: 'bar',
+        data: {
+            labels: ['小学生(6-12岁)', '初中生(13-15岁)', '高中生(16-18岁)', '大学生(18-22岁)'],
+            datasets: [{
+                label: '推荐睡眠时间',
+                data: [10, 9, 8, 8],
+                backgroundColor: 'rgba(245,214,123,0.5)',
+                borderColor: '#f5d67b',
+                borderWidth: 1.5,
+                borderRadius: 4,
+            }, {
+                label: '实际睡眠时间',
+                data: [8.5, 7.2, 6.5, 7.0],
+                backgroundColor: 'rgba(91,141,239,0.5)',
+                borderColor: '#5b8def',
+                borderWidth: 1.5,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: '各学段睡眠时间：推荐 vs 实际', color: '#f5d67b', font: { size: 15 } }
+            },
+            scales: {
+                y: { min: 0, max: 12, ticks: { callback: v => v + 'h' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // ======== Chart 3: Night Owl Reasons ========
+    new Chart(document.getElementById('chartNightOwlReasons'), {
+        type: 'doughnut',
+        data: {
+            labels: ['娱乐/刷手机', '学业/工作', '焦虑/失眠', '社交', '其他'],
+            datasets: [{
+                data: [42, 28, 18, 8, 4],
+                backgroundColor: [
+                    'rgba(91,141,239,0.7)',
+                    'rgba(110,198,202,0.7)',
+                    'rgba(245,214,123,0.7)',
+                    'rgba(150,180,210,0.5)',
+                    'rgba(100,120,150,0.4)',
+                ],
+                borderColor: 'rgba(10,14,26,0.8)',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: '熬夜原因分布', color: '#f5d67b', font: { size: 15 } },
+                legend: { position: 'bottom', labels: { padding: 15 } }
+            }
+        }
+    });
+
+    // ======== Chart 4: Gender Sleep Gap ========
+    new Chart(document.getElementById('chartGenderGap'), {
+        type: 'bar',
+        data: {
+            labels: ['睡眠困扰率', '平均睡眠时长(h)', '家务劳动时间(h/天)', '入睡时间'],
+            datasets: [{
+                label: '女性',
+                data: [51.1, 6.8, 3.5, 23.8],
+                backgroundColor: 'rgba(245,214,123,0.6)',
+                borderColor: '#f5d67b',
+                borderWidth: 1.5,
+                borderRadius: 4,
+            }, {
+                label: '男性',
+                data: [45.9, 7.1, 1.8, 23.5],
+                backgroundColor: 'rgba(91,141,239,0.6)',
+                borderColor: '#5b8def',
+                borderWidth: 1.5,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: '睡眠性别差异：看不见的"第二班"', color: '#f5d67b', font: { size: 15 } }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // ======== Chart 5: Sleep Issues by Age ========
+    new Chart(document.getElementById('chartAgeSleep'), {
+        type: 'line',
+        data: {
+            labels: ['18-25岁', '26-35岁', '36-45岁', '46-55岁', '56-65岁', '65岁以上'],
+            datasets: [{
+                label: '睡眠困扰率 (%)',
+                data: [38, 42, 48, 45, 40, 42],
+                borderColor: '#f5d67b',
+                backgroundColor: 'rgba(245,214,123,0.06)',
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#f5d67b',
+                pointRadius: 5,
+                yAxisID: 'y',
+            }, {
+                label: '平均睡眠时长 (小时)',
+                data: [7.3, 7.0, 6.73, 6.9, 7.1, 6.8],
+                borderColor: '#5b8def',
+                backgroundColor: 'rgba(91,141,239,0.06)',
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#5b8def',
+                pointRadius: 5,
+                yAxisID: 'y1',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                title: { display: true, text: '各年龄段睡眠困扰率与睡眠时长', color: '#f5d67b', font: { size: 15 } }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    min: 30, max: 55,
+                    title: { display: true, text: '睡眠困扰率 (%)', color: '#f5d67b' },
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    min: 6, max: 8,
+                    title: { display: true, text: '睡眠时长 (小时)', color: '#5b8def' },
+                    grid: { drawOnChartArea: false },
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // ======== Also trigger fade-in for initially visible elements ========
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.fade-in').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                el.classList.add('visible');
+            }
+        });
+    });
+    </script>
+</body>
+</html>
