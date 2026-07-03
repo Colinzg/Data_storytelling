@@ -1,0 +1,73 @@
+<!-- ═══════════════════ 互动自测模块 ═══════════════════ -->
+<section class="quiz-section fade-in" id="interactive-quiz-section">
+    <div class="quiz-wrapper">
+
+        <!-- 模块标题 -->
+        <div class="quiz-header fade-in">
+            <h2 class="quiz-title">🌙 测一测：偷走你睡眠的是什么</h2>
+            <p class="quiz-subtitle">回答 4 个问题，找到属于你的睡眠真相</p>
+        </div>
+
+        <!-- ===== 问卷区域 ===== -->
+        <div id="quiz-container" class="quiz-container fade-in">
+
+            <!-- 进度条 -->
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar" id="quiz-progress-bar"></div>
+            </div>
+            <div class="quiz-progress-text" id="quiz-progress-text">第 1 题 / 共 4 题</div>
+
+            <!-- 题目显示区 -->
+            <div class="quiz-question-area" id="quiz-question-area">
+                <h3 class="quiz-question" id="quiz-question"></h3>
+                <div class="quiz-options" id="quiz-options"></div>
+            </div>
+
+            <!-- 导航按钮 -->
+            <div class="quiz-nav">
+                <button class="quiz-btn quiz-btn-back" id="quiz-btn-back" style="visibility:hidden;">← 上一题</button>
+            </div>
+        </div>
+
+        <!-- ===== 结果区域（初始隐藏） ===== -->
+        <div id="quiz-result" class="quiz-result" style="display:none;">
+
+            <div class="result-header fade-in">
+                <h2 class="result-title" id="result-title"></h2>
+                <p class="result-subtitle">这是属于你的睡眠画像</p>
+            </div>
+
+            <!-- 匹配角色卡片 -->
+            <div class="result-card data-card fade-in" id="result-card">
+                <div class="result-avatar" id="result-avatar"></div>
+                <div class="result-info">
+                    <div class="result-role" id="result-role"></div>
+                    <div class="result-thief-label" id="result-thief-label"></div>
+                    <p class="result-desc" id="result-desc"></p>
+                </div>
+            </div>
+
+            <!-- 跳转按钮 -->
+            <div class="result-actions fade-in">
+                <button class="quiz-btn quiz-btn-jump" id="quiz-btn-jump">跳转查看对应人物故事 →</button>
+            </div>
+
+            <!-- 分割线 -->
+            <div class="quiz-divider fade-in"></div>
+
+            <!-- AI 建议区域 -->
+            <div class="ai-advice-section fade-in">
+                <h3 class="ai-advice-title">个性化睡眠改善建议</h3>
+                <button class="quiz-btn quiz-btn-ai" id="quiz-btn-ai">获取我的个性化睡眠改善建议</button>
+                <div id="ai-advice-box" class="ai-advice-box"></div>
+            </div>
+
+            <!-- 重新测试 -->
+            <div class="result-actions fade-in" style="margin-top:2rem;">
+                <button class="quiz-btn quiz-btn-retry" id="quiz-btn-retry">🔄 重新测试</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- ═══════════════════ 互动自测模块结束 ═══════════════════ -->
