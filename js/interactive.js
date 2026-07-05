@@ -282,7 +282,7 @@
         if (!aiBox) return;
 
         // 1. UI 状态更新：显示加载中
-        aiBox.innerHTML = '<p style="color:#8a9bb5; text-align:center;">🚀 正在连接 DeepSeek 大脑分析中...</p>';
+        aiBox.innerHTML = '<p style="color:#8a9bb5; text-align:center;">🚀 正在分析中，马上为您生成建议...</p>';
         
         // 禁用按钮防止重复点击
         const btn = document.getElementById('quiz-btn-ai');
