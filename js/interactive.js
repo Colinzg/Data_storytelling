@@ -276,15 +276,77 @@
         }, 200);
     }
 
-    // ============ 预留 AI 调用函数 ============
+    // ============ AI 调用函数 (已填入Key) ============
     window.fetchSleepAdvice = async function (userSelectInfo) {
-        // 入参示例：{ age:"青年", sleepTrouble:"入睡困难", beforeSleepAct:"刷手机", rootCause:"报复性刷电子屏幕不想入睡" }
-        // 仅预留函数，不写任何API调用代码
-        // 结果显示到 #ai-advice-box
-        console.log('预留AI调用函数，入参:', userSelectInfo);
+        // 入参示例：{ age:"青年", sleepTrouble:"入睡困难", beforeSleepAct:"刷手机", rootCause:"报复性熬夜" }
+        
+        const aiBox = document.getElementById('ai-advice-box');
+        if (!aiBox) return;
+
+        // 1. UI 状态更新：显示加载中
+        const originalContent = aiBox.innerHTML; 
+        aiBox.innerHTML = '<p style="color:#8a9bb5; text-align:center;">🚀 正在连接 DeepSeek 大脑分析中...</p>';
+        
+        // 禁用按钮防止重复点击 (假设按钮ID是 quiz-btn-ai，如果不是请根据实际HTML调整)
+        const btn = document.querySelector('button[onclick*="fetchSleepAdvice"]') || document.getElementById('quiz-btn-ai');
+        if(btn) {
+            btn.disabled = true;
+            btn.innerText = '分析中...';
+        }
+
+        try {
+            // 2. 构造 Prompt
+            const promptText = `
+                你是一个专业的睡眠健康顾问。根据用户的测试情况，给出一段简短、温暖且专业的建议（200字以内）。
+                用户画像：
+                - 年龄段：${userSelectInfo.age || '未知'}
+                - 核心困扰：${userSelectInfo.sleepTrouble || '未知'}
+                - 睡前习惯：${userSelectInfo.beforeSleepAct || '未知'}
+                - 潜在原因：${userSelectInfo.rootCause || '未知'}
+                
+                请直接给出建议，不要包含任何开场白或JSON格式。
+            `;
+
+            // 3. 发起请求
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer sk-74f45b6753fd4940afdec735208d3557' // 你的Key
+                },
+                body: JSON.stringify({
+                    model: "deepseek-chat", // 或者 deepseek-v3
+                    messages: [
+                        { role: "system", content: "你是一个温暖的睡眠助手。" },
+                        { role: "user", content: promptText }
+                    ],
+                    temperature: 0.7
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const adviceText = data.choices[0].message.content;
+
+            // 4. 显示结果
+            aiBox.innerHTML = `<div class="advice-content">${adviceText}</div>`;
+
+        } catch (error) {
+            console.error('AI生成失败:', error);
+            aiBox.innerHTML = `<p style="color:#ff6b6b;">😵 分析失败了 (${error.message})，请稍后再试。</p>`;
+        } finally {
+            // 恢复按钮状态
+            if(btn) {
+                btn.disabled = false;
+                btn.innerText = '获取我的个性化睡眠改善建议';
+            }
+        }
     };
 
-    // ============ 启动 ============
+    // ============ 启动逻辑 (保持原样) ============
     function tryInit() {
         if (getEl('quiz-container')) {
             initQuiz();
@@ -299,4 +361,4 @@
         tryInit();
     }
 
-})();
+})(); 
