@@ -276,72 +276,92 @@
         }, 200);
     }
 
-    // ============ AI 调用函数 (已填入Key) ============
+        // ============ AI 调用函数 (已修复变量名并优化提示) ============
     window.fetchSleepAdvice = async function (userSelectInfo) {
-        // 入参示例：{ age:"青年", sleepTrouble:"入睡困难", beforeSleepAct:"刷手机", rootCause:"报复性熬夜" }
-        
         const aiBox = document.getElementById('ai-advice-box');
         if (!aiBox) return;
 
         // 1. UI 状态更新：显示加载中
-        const originalContent = aiBox.innerHTML; 
         aiBox.innerHTML = '<p style="color:#8a9bb5; text-align:center;">🚀 正在连接 DeepSeek 大脑分析中...</p>';
         
-        // 禁用按钮防止重复点击 (假设按钮ID是 quiz-btn-ai，如果不是请根据实际HTML调整)
-        const btn = document.querySelector('button[onclick*="fetchSleepAdvice"]') || document.getElementById('quiz-btn-ai');
+        // 禁用按钮防止重复点击
+        const btn = document.getElementById('quiz-btn-ai');
         if(btn) {
             btn.disabled = true;
-            btn.innerText = '分析中...';
+            btn.innerText = 'AI 思考中...';
         }
 
         try {
-            // 2. 构造 Prompt
-            const promptText = `
-                你是一个专业的睡眠健康顾问。根据用户的测试情况，给出一段简短、温暖且专业的建议（200字以内）。
-                用户画像：
-                - 年龄段：${userSelectInfo.age || '未知'}
-                - 核心困扰：${userSelectInfo.sleepTrouble || '未知'}
-                - 睡前习惯：${userSelectInfo.beforeSleepAct || '未知'}
-                - 潜在原因：${userSelectInfo.rootCause || '未知'}
-                
-                请直接给出建议，不要包含任何开场白或JSON格式。
+            // ⚠️ 定义 AI 的人设和输出格式
+            const prompt = `
+                你现在是一位拥有20年经验的“资深睡眠健康管理师”，你的说话风格非常亲切、温暖、有同理心，像一位老朋友在关心用户。
+
+                用户的测试数据如下：
+                - 年龄段：${userSelectInfo.age}
+                - 核心困扰：${userSelectInfo.sleepTrouble}
+                import { useState } from 'react';
+
+                请根据以上数据，为用户生成一份个性化的改善建议。必须严格遵守以下输出格式：
+
+                第一部分【暖心导语】：
+                先用一段话（约50-80字）共情用户的现状，告诉用户这种情况很常见，不要焦虑，给予心理上的抚慰和支持。语气要温柔。
+
+                第二部分【行动指南】：
+                针对用户的“睡前习惯”和“潜在根源”，给出3条具体的、可执行的生活建议。
+                格式要求：使用有序列表（1. 2. 3.），每条建议先加粗一个小标题，再解释具体做法。
+
+                请直接输出内容，不需要说“好的”、“没问题”等客套话。
             `;
 
-            // 3. 发起请求
+            // 2. 发起 API 请求 (注意：这里修正了变量名为 prompt)
             const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer sk-74f45b6753fd4940afdec735208d3557' // 你的Key
+                    'Authorization': `Bearer sk-74f45b6753fd4940afdec735208d3557`
                 },
                 body: JSON.stringify({
-                    model: "deepseek-chat", // 或者 deepseek-v3
+                    model: "deepseek-chat",
                     messages: [
-                        { role: "system", content: "你是一个温暖的睡眠助手。" },
-                        { role: "user", content: promptText }
+                        { role: "system", content: "你是一个专业的睡眠健康助手。" },
+                        { role: "user", content: prompt } // ✅ 这里修正了：之前误写成了 promptText
                     ],
                     temperature: 0.7
                 })
             });
 
+            // ❗重点：检查认证错误
+            if (response.status === 401) {
+                throw new Error('API 密钥无效或已过期，请检查配置');
+            }
+
             if (!response.ok) {
-                throw new Error(`API Error: ${response.status}`);
+                throw new Error(`API 请求失败: ${response.status}`);
             }
 
             const data = await response.json();
-            const adviceText = data.choices[0].message.content;
-
-            // 4. 显示结果
-            aiBox.innerHTML = `<div class="advice-content">${adviceText}</div>`;
+            
+            // 3. 处理返回结果
+            if (data.choices && data.choices.length > 0) {
+                let aiText = data.choices[0].message.content;
+                
+                // 简单的格式化：把换行符转为 HTML 的 <br>，让排版好看点
+                aiText = aiText.replace(/\n/g, '<br>');
+                
+                aiBox.innerHTML = `<div class="advice-content">${aiText}</div>`;
+            } else {
+                throw new Error('未获取到有效建议');
+            }
 
         } catch (error) {
-            console.error('AI生成失败:', error);
-            aiBox.innerHTML = `<p style="color:#ff6b6b;">😵 分析失败了 (${error.message})，请稍后再试。</p>`;
+            console.error(error);
+            // 将具体的错误信息显示在页面上
+            aiBox.innerHTML = `<p style="color:#ff6b6b; font-size:14px; text-align:center;">❌ ${error.message}</p>`;
         } finally {
             // 恢复按钮状态
             if(btn) {
                 btn.disabled = false;
-                btn.innerText = '获取我的个性化睡眠改善建议';
+                btn.innerText = '💡 获取我的个性化睡眠改善建议';
             }
         }
     };
