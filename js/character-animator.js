@@ -57,7 +57,7 @@
             return this.currentFrame <= 0;
         }
 
-        // ---- 切换到指定帧 ----
+        // ---- 切换到指定帧（淡入淡出过渡） ----
         setFrame(index) {
             if (!this._loaded) return;
             const newFrame = Math.max(0, Math.min(FRAME_COUNT - 1, index));
@@ -67,14 +67,15 @@
             const targetImg = this.images[newFrame];
             if (!targetImg || !targetImg.complete) return;
 
-            this.imgEl.style.opacity = '0.4';
-            this.imgEl.style.transition = 'opacity 0.08s ease';
+            // 淡出 → 切换 → 淡入，250ms 连贯过渡
             const self = this;
+            this.imgEl.style.transition = 'opacity 0.25s ease-in-out';
+            this.imgEl.style.opacity = '0';
+
             setTimeout(function () {
                 self.imgEl.src = targetImg.src;
                 self.imgEl.style.opacity = '1';
-                self.imgEl.style.transition = 'opacity 0.2s ease';
-            }, 80);
+            }, 250);
         }
 
         nextFrame() {

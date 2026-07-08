@@ -274,7 +274,7 @@ h3 {
     object-fit: cover;
     object-position: center top;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.25s ease-in-out;
     user-select: none;
     -webkit-user-drag: none;
 }
@@ -524,7 +524,7 @@ h3 {
     object-fit: cover;
     border-radius: 50%;
     cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: opacity 0.25s ease-in-out, transform 0.2s ease;
     opacity: 0;
 }
 
