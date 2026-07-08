@@ -1,8 +1,2 @@
-# 角色图片 — 体积较大，手动上传
-images/characters/**/*.png
-images/characters/**/*.jpg
-images/characters/**/*.webp
-
-# 保留 README 和 .gitkeep 占位文件
-!images/characters/README.md
-!images/characters/**/.gitkeep
+# 图片目录 — 通过压缩包手动分发，不上传 GitHub
+images/
