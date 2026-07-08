@@ -1,2 +1,5 @@
-# 图片目录 — 通过压缩包手动分发，不上传 GitHub
-images/
+# 角色图片目录 — 通过压缩包手动分发
+images/characters/
+
+# 保留 images 文件夹占位
+!images/.gitkeep
