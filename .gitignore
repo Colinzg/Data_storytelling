@@ -1,0 +1,7 @@
+# 角色图片 — 体积较大，手动上传
+images/characters/**/*.png
+images/characters/**/*.jpg
+images/characters/**/*.webp
+
+# 保留 README
+!images/characters/README.md
