@@ -60,7 +60,7 @@
             sceneClass: '.scene-son',
             roleDesc: '16岁 · 高中生',
             desc: '调研显示高中生推荐睡眠不少于8小时，学业是青少年睡眠不足首要诱因',
-            avatarSvg: '<svg width="72" height="72" viewBox="0 0 72 72"><ellipse cx="36" cy="24" rx="24" ry="18" fill="#2a1a0a"/><path d="M16 30 Q20 18 36 16 Q52 18 56 30" fill="#2a1a0a"/><ellipse cx="36" cy="34" rx="19" ry="18" fill="#e8d0b0"/><circle cx="29" cy="32" r="2.8" fill="#2a1808"/><circle cx="43" cy="32" r="2.8" fill="#2a1808"/><path d="M31 41 Q36 38 41 41" stroke="#b09080" stroke-width="1.5" fill="none"/></svg>'
+            avatarImg: 'images/characters/son/1.png'
         },
         {
             key: '报复性刷电子屏幕不想入睡',
@@ -69,25 +69,25 @@
             sceneClass: '.scene-daughter',
             roleDesc: '21岁 · 大学生',
             desc: '全国21%人群因睡前长期使用电子设备，大幅降低睡眠质量',
-            avatarSvg: '<svg width="72" height="72" viewBox="0 0 72 72"><ellipse cx="36" cy="28" rx="24" ry="22" fill="#1a1a2a"/><rect x="12" y="28" width="48" height="30" rx="6" fill="#1a1a2a"/><ellipse cx="36" cy="34" rx="19" ry="17" fill="#f0dcc5"/><circle cx="29" cy="33" r="2.8" fill="#1a0a05"/><circle cx="43" cy="33" r="2.8" fill="#1a0a05"/><path d="M29 40 Q36 45 43 40" stroke="#c09880" stroke-width="1.5" fill="none"/></svg>'
+            avatarImg: 'images/characters/daughter/1.png'
         },
         {
             key: '工作压力',
             familyMember: '父亲',
             thiefLabel: '工作压力',
-            sceneClass: '.scene-parents',
+            sceneClass: '.scene-father',
             roleDesc: '45岁 · 公司中层',
             desc: '22%受访者将职场压力列为阻碍优质睡眠的核心因素',
-            avatarSvg: '<svg width="72" height="72" viewBox="0 0 72 72"><ellipse cx="36" cy="22" rx="25" ry="16" fill="#3a3a3a"/><rect x="10" y="22" width="52" height="14" rx="7" fill="#3a3a3a"/><ellipse cx="36" cy="34" rx="22" ry="20" fill="#e0c8a8"/><circle cx="28" cy="31" r="2.8" fill="#3a2210"/><circle cx="44" cy="31" r="2.8" fill="#3a2210"/><path d="M30 42 Q36 44 42 42" stroke="#b09080" stroke-width="1.5" fill="none"/></svg>'
+            avatarImg: 'images/characters/father/1.png'
         },
         {
             key: '家庭琐事、长期操心家人',
             familyMember: '母亲',
             thiefLabel: '家庭负担',
-            sceneClass: '.scene-parents',
+            sceneClass: '.scene-mother',
             roleDesc: '42岁 · 教师',
             desc: '女性受家庭责任影响睡眠的比例显著高于男性，双重负担加剧失眠',
-            avatarSvg: '<svg width="72" height="72" viewBox="0 0 72 72"><ellipse cx="36" cy="26" rx="26" ry="20" fill="#5a3a2a"/><rect x="10" y="26" width="52" height="28" rx="8" fill="#5a3a2a"/><ellipse cx="36" cy="34" rx="20" ry="18" fill="#f0dcc0"/><circle cx="29" cy="33" r="2.5" fill="#3a2210"/><circle cx="43" cy="33" r="2.5" fill="#3a2210"/><path d="M30 41 Q36 45 42 41" stroke="#c09888" stroke-width="1.5" fill="none"/></svg>'
+            avatarImg: 'images/characters/mother/1.png'
         },
         {
             key: '年龄增长导致睡眠能力下降',
@@ -96,7 +96,7 @@
             sceneClass: '.scene-grandma',
             roleDesc: '67岁 · 退休',
             desc: '66岁以上人群平均夜间清醒2.21次，早醒、浅眠为老年普遍问题',
-            avatarSvg: '<svg width="72" height="72" viewBox="0 0 72 72"><ellipse cx="36" cy="28" rx="24" ry="22" fill="#8a8a9a"/><ellipse cx="36" cy="18" rx="14" ry="10" fill="#9a9aaa"/><ellipse cx="36" cy="34" rx="20" ry="18" fill="#e8d5c0"/><circle cx="29" cy="33" r="2.5" fill="#3a2a1a"/><circle cx="43" cy="33" r="2.5" fill="#3a2a1a"/><path d="M29 40 Q36 46 43 40" stroke="#c0a090" stroke-width="1.5" fill="none"/></svg>'
+            avatarImg: 'images/characters/grandma/1.png'
         }
     ];
 
@@ -257,7 +257,7 @@
         resultEl.style.display = 'block';
 
         getEl('result-title').textContent = '你的睡眠小偷：' + matchedResult.thiefLabel;
-        getEl('result-avatar').innerHTML = matchedResult.avatarSvg;
+        getEl('result-avatar').innerHTML = '<img src="' + matchedResult.avatarImg + '" alt="' + matchedResult.familyMember + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />';
         getEl('result-role').textContent = matchedResult.familyMember + ' · ' + matchedResult.roleDesc;
         getEl('result-thief-label').textContent = '🏷️ 睡眠小偷标签：' + matchedResult.thiefLabel;
         getEl('result-desc').textContent = matchedResult.desc;

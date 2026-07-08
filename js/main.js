@@ -10,6 +10,7 @@ const COMPONENTS = [
     { id: 'comp-scene-son', file: 'components/scene-son.html' },
     { id: 'comp-scene-daughter', file: 'components/scene-daughter.html' },
     { id: 'comp-scene-parents', file: 'components/scene-parents.html' },
+    { id: 'comp-scene-mother', file: 'components/scene-mother.html' },
     { id: 'comp-scene-grandma', file: 'components/scene-grandma.html' },
     { id: 'comp-scene-morning', file: 'components/scene-morning.html' },
     { id: 'comp-interactive-quiz', file: 'components/interactive-quiz.html' },

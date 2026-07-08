@@ -245,8 +245,8 @@ h3 {
 
 .illustration-box {
     width: 100%;
-    max-width: 460px;
-    aspect-ratio: 1;
+    max-width: 540px;
+    aspect-ratio: 3 / 4;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 24px;
@@ -254,6 +254,61 @@ h3 {
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
+
+/* ============ Character Image Container ============ */
+.char-image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at center, var(--night-700) 0%, var(--night-900) 100%);
+}
+
+.char-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.char-image-container img:hover {
+    filter: brightness(1.08);
+}
+
+.char-image-container img:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}
+
+/* ============ Character Hint ============ */
+.char-hint {
+    text-align: center;
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+    letter-spacing: 0.5px;
+    transition: opacity 0.4s ease;
+}
+
+.char-hint span {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 0.3rem 1rem;
+}
+
+
+
 
 .time-tag {
     position: absolute;
@@ -463,6 +518,24 @@ h3 {
     overflow: hidden;
 }
 
+.char-card .char-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0;
+}
+
+.char-card .char-avatar img:hover {
+    transform: scale(1.1);
+}
+
+.char-card .char-avatar img:active {
+    transform: scale(0.95);
+}
+
 .char-card .char-avatar.grandma {
     background: linear-gradient(135deg, #4a3a5e, #3a2a4e);
 }
@@ -511,8 +584,12 @@ h3 {
     background: linear-gradient(180deg, #0e172a 0%, #101b30 100%);
 }
 
-.scene-parents {
+.scene-father {
     background: linear-gradient(180deg, #101b30 0%, #0d1628 100%);
+}
+
+.scene-mother {
+    background: linear-gradient(180deg, #0d1628 0%, #101b30 100%);
 }
 
 .scene-grandma {
@@ -521,6 +598,68 @@ h3 {
 
 .scene-morning {
     background: linear-gradient(180deg, #121e38 0%, #162544 30%, #1b3054 60%, var(--night-900) 100%);
+}
+
+/* 早晨场景：横版图片，上下布局 */
+.scene-morning .scene-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+}
+
+.scene-morning .scene-visual {
+    order: -1;
+}
+
+.scene-morning .illustration-box {
+    max-width: 900px;
+    aspect-ratio: auto;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.scene-morning .char-image-container {
+    position: relative;
+    width: 100%;
+    background: transparent;
+}
+
+.scene-morning .char-image-container img {
+    object-fit: contain;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* 早晨场景时间标签移到图外 */
+.scene-morning .time-tag {
+    position: static;
+    display: inline-block;
+    margin-bottom: 0.8rem;
+    background: rgba(245, 214, 123, 0.2);
+    color: var(--warm-300);
+    border: 1px solid rgba(245, 214, 123, 0.35);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.5rem 1.4rem;
+}
+
+.scene-morning .scene-text {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.scene-morning .scene-text .narration {
+    text-align: center;
+}
+
+.scene-morning .scene-text .data-card {
+    max-width: 400px;
+    margin: 1rem auto 0;
 }
 
 /* ============ Finale ============ */
@@ -664,8 +803,8 @@ h3 {
     }
 
     .illustration-box {
-        max-width: 340px;
-        aspect-ratio: 1;
+        max-width: 400px;
+        aspect-ratio: 3 / 4;
     }
 
     .scene {
