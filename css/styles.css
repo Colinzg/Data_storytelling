@@ -1,0 +1,2008 @@
+/* ================================================================
+   styles.css — 全局样式表
+   🎨 设计组编辑区域
+   Portfolio 级视觉：Midnight Blue · Glassmorphism · Editorial
+   ================================================================ */
+
+/* ============ CSS Variables ============ */
+:root {
+    /* 深色基底 — 午夜蓝 */
+    --bg-deep: #040810;
+    --bg-base: #070c1a;
+    --bg-raised: #0b1124;
+    --bg-glass: rgba(255, 255, 255, 0.025);
+
+    /* 暖金点缀 */
+    --gold-400: #e8c564;
+    --gold-300: #f0d78c;
+    --gold-200: #f7e6b8;
+
+    /* 冷蓝点缀 */
+    --blue-400: #6b9fff;
+    --blue-300: #8bb5ff;
+
+    /* 粉白点缀 */
+    --rose: #e8a0bf;
+    --rose-soft: rgba(232, 160, 191, 0.25);
+    --white-soft: rgba(255, 255, 255, 0.7);
+
+    /* 文字层级 */
+    --text-primary: #e8ecf4;
+    --text-secondary: #8892a6;
+    --text-tertiary: #545d72;
+
+    /* 玻璃拟态 */
+    --glass-bg: rgba(255, 255, 255, 0.025);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-hover: rgba(255, 255, 255, 0.04);
+
+    /* 卡片 */
+    --card-radius: 22px;
+    --card-radius-sm: 14px;
+
+    /* 发光 */
+    --glow-gold: 0 0 60px rgba(232, 197, 100, 0.06);
+    --glow-blue: 0 0 60px rgba(107, 159, 255, 0.05);
+
+    /* 动画 */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* 内容宽度 */
+    --content-narrow: 640px;
+    --content-wide: 720px;
+    --content-scene: 1040px;
+}
+
+/* ============ Reset & Base ============ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    background: var(--bg-deep);
+}
+
+/* 噪点纹理叠加 */
+html::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+}
+
+body {
+    font-family: 'Inter', 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background:
+        linear-gradient(180deg, #080e1c 0%, #060a16 30%, var(--bg-deep) 70%, var(--bg-deep) 100%);
+    color: var(--text-primary);
+    line-height: 1.75;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.01em;
+}
+
+/* 文字选中色 */
+::selection {
+    background: rgba(232, 197, 100, 0.25);
+    color: var(--text-primary);
+}
+
+/* 侧边导航点 */
+#nav-dots {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9997;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.nav-dot {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s var(--ease-out);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.nav-dot:hover {
+    background: rgba(232,197,100,0.35);
+    border-color: rgba(232,197,100,0.3);
+    transform: scale(1.4);
+}
+
+.nav-dot.active {
+    background: var(--gold-400);
+    border-color: var(--gold-400);
+    box-shadow: 0 0 12px rgba(232,197,100,0.4);
+    transform: scale(1.3);
+}
+
+@media (max-width: 768px) {
+    #nav-dots {
+        right: 0.6rem;
+        gap: 10px;
+    }
+    .nav-dot {
+        width: 6px;
+        height: 6px;
+    }
+}
+
+/* 滚动进度条 */
+#scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 1px;
+    z-index: 10000;
+    pointer-events: none;
+    background: linear-gradient(to right, var(--rose), var(--gold-400), var(--blue-400));
+    transition: width 0.1s linear;
+}
+
+/* 回到顶部按钮 */
+#back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity 0.35s var(--ease-out), visibility 0.35s var(--ease-out), transform 0.35s var(--ease-spring), box-shadow 0.35s var(--ease-out), border-color 0.35s var(--ease-out);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+#back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#back-to-top:hover {
+    color: var(--gold-400);
+    border-color: rgba(232,197,100,0.3);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 20px rgba(232,197,100,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+#back-to-top svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s var(--ease-spring);
+}
+
+#back-to-top:hover svg {
+    transform: translateY(-2px);
+}
+
+/* 全局星空背景：顶部密集，向下渐隐，闪烁动画 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+        /* ══════ 亮白大星 顶层 ══════ */
+        radial-gradient(2.2px 2.2px at 1% 3%,   rgba(255,255,255,0.85), transparent),
+        radial-gradient(2.6px 2.6px at 5% 6%,   rgba(255,255,255,0.75), transparent),
+        radial-gradient(1.8px 1.8px at 8% 1%,   rgba(255,255,255,0.7), transparent),
+        radial-gradient(2.4px 2.4px at 12% 7%,  rgba(255,255,255,0.72), transparent),
+        radial-gradient(1.5px 1.5px at 16% 5%,  rgba(255,255,255,0.8), transparent),
+        radial-gradient(2.0px 2.0px at 19% 2%,  rgba(255,255,255,0.68), transparent),
+        radial-gradient(2.3px 2.3px at 24% 8%,  rgba(255,255,255,0.76), transparent),
+        radial-gradient(1.6px 1.6px at 27% 3%,  rgba(255,255,255,0.65), transparent),
+        radial-gradient(2.0px 2.0px at 32% 7%,  rgba(255,255,255,0.75), transparent),
+        radial-gradient(2.5px 2.5px at 35% 10%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 38% 3%,  rgba(255,255,255,0.6), transparent),
+        radial-gradient(2.3px 2.3px at 42% 9%,  rgba(255,255,255,0.78), transparent),
+        radial-gradient(1.9px 1.9px at 45% 5%,  rgba(255,255,255,0.68), transparent),
+        radial-gradient(2.1px 2.1px at 48% 11%, rgba(255,255,255,0.73), transparent),
+        radial-gradient(1.7px 1.7px at 52% 4%,  rgba(255,255,255,0.68), transparent),
+        radial-gradient(2.4px 2.4px at 55% 10%, rgba(255,255,255,0.75), transparent),
+        radial-gradient(2.0px 2.0px at 58% 3%,  rgba(255,255,255,0.72), transparent),
+        radial-gradient(1.6px 1.6px at 61% 8%,  rgba(255,255,255,0.62), transparent),
+        radial-gradient(1.9px 1.9px at 64% 2%,  rgba(255,255,255,0.7), transparent),
+        radial-gradient(2.2px 2.2px at 68% 11%, rgba(255,255,255,0.74), transparent),
+        radial-gradient(1.8px 1.8px at 72% 6%,  rgba(255,255,255,0.7), transparent),
+        radial-gradient(2.2px 2.2px at 76% 9%,  rgba(255,255,255,0.72), transparent),
+        radial-gradient(1.4px 1.4px at 80% 4%,  rgba(255,255,255,0.58), transparent),
+        radial-gradient(2.5px 2.5px at 83% 10%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(2.1px 2.1px at 86% 3%,  rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 89% 7%,  rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.6px 1.6px at 92% 3%,  rgba(255,255,255,0.62), transparent),
+        radial-gradient(2.0px 2.0px at 95% 8%,  rgba(255,255,255,0.68), transparent),
+        radial-gradient(1.8px 1.8px at 97% 2%,  rgba(255,255,255,0.65), transparent),
+        /* ── 白色小星补充 ── */
+        radial-gradient(0.8px 0.8px at 2% 12%,  rgba(255,255,255,0.42), transparent),
+        radial-gradient(0.6px 0.6px at 4% 8%,   rgba(255,255,255,0.45), transparent),
+        radial-gradient(0.7px 0.7px at 7% 15%,  rgba(255,255,255,0.38), transparent),
+        radial-gradient(0.9px 0.9px at 11% 6%,  rgba(255,255,255,0.35), transparent),
+        radial-gradient(0.5px 0.5px at 14% 14%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(0.8px 0.8px at 17% 9%,  rgba(255,255,255,0.35), transparent),
+        radial-gradient(0.6px 0.6px at 20% 14%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(0.9px 0.9px at 23% 7%,  rgba(255,255,255,0.32), transparent),
+        radial-gradient(0.5px 0.5px at 27% 12%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(0.8px 0.8px at 30% 16%, rgba(255,255,255,0.36), transparent),
+        radial-gradient(0.7px 0.7px at 33% 9%,  rgba(255,255,255,0.38), transparent),
+        radial-gradient(0.6px 0.6px at 37% 15%, rgba(255,255,255,0.32), transparent),
+        radial-gradient(1.0px 1.0px at 40% 11%, rgba(255,255,255,0.42), transparent),
+        radial-gradient(0.5px 0.5px at 43% 16%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.8px 0.8px at 46% 8%,  rgba(255,255,255,0.36), transparent),
+        radial-gradient(0.6px 0.6px at 50% 16%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(0.9px 0.9px at 53% 10%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(0.5px 0.5px at 56% 15%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.7px 0.7px at 60% 9%,  rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.6px 0.6px at 63% 16%, rgba(255,255,255,0.32), transparent),
+        radial-gradient(0.8px 0.8px at 66% 12%, rgba(255,255,255,0.38), transparent),
+        radial-gradient(0.5px 0.5px at 69% 17%, rgba(255,255,255,0.26), transparent),
+        radial-gradient(0.9px 0.9px at 72% 14%, rgba(255,255,255,0.36), transparent),
+        radial-gradient(0.7px 0.7px at 76% 10%, rgba(255,255,255,0.35), transparent),
+        radial-gradient(0.5px 0.5px at 79% 17%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.8px 0.8px at 81% 13%, rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.6px 0.6px at 85% 16%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(0.7px 0.7px at 88% 10%, rgba(255,255,255,0.32), transparent),
+        radial-gradient(0.9px 0.9px at 91% 15%, rgba(255,255,255,0.35), transparent),
+        radial-gradient(0.5px 0.5px at 94% 9%,  rgba(255,255,255,0.28), transparent),
+        /* ══════ 粉色星 ══════ */
+        radial-gradient(1.8px 1.8px at 3% 20%,  rgba(232,160,191,0.55), transparent),
+        radial-gradient(1.4px 1.4px at 6% 14%,  rgba(232,160,191,0.6), transparent),
+        radial-gradient(1.2px 1.2px at 10% 22%, rgba(232,160,191,0.48), transparent),
+        radial-gradient(1.6px 1.6px at 14% 16%, rgba(232,160,191,0.5), transparent),
+        radial-gradient(1.0px 1.0px at 18% 20%, rgba(232,160,191,0.42), transparent),
+        radial-gradient(1.5px 1.5px at 21% 13%, rgba(232,160,191,0.52), transparent),
+        radial-gradient(1.8px 1.8px at 25% 21%, rgba(232,160,191,0.5), transparent),
+        radial-gradient(1.3px 1.3px at 28% 15%, rgba(232,160,191,0.46), transparent),
+        radial-gradient(1.0px 1.0px at 30% 22%, rgba(232,160,191,0.42), transparent),
+        radial-gradient(1.7px 1.7px at 34% 16%, rgba(232,160,191,0.55), transparent),
+        radial-gradient(1.5px 1.5px at 37% 10%, rgba(232,160,191,0.5), transparent),
+        radial-gradient(1.2px 1.2px at 40% 22%, rgba(232,160,191,0.44), transparent),
+        radial-gradient(1.3px 1.3px at 44% 14%, rgba(232,160,191,0.48), transparent),
+        radial-gradient(1.8px 1.8px at 47% 20%, rgba(232,160,191,0.52), transparent),
+        radial-gradient(1.1px 1.1px at 50% 17%, rgba(232,160,191,0.45), transparent),
+        radial-gradient(1.5px 1.5px at 53% 9%,  rgba(232,160,191,0.5), transparent),
+        radial-gradient(1.6px 1.6px at 56% 21%, rgba(232,160,191,0.5), transparent),
+        radial-gradient(1.0px 1.0px at 60% 14%, rgba(232,160,191,0.45), transparent),
+        radial-gradient(1.3px 1.3px at 63% 19%, rgba(232,160,191,0.47), transparent),
+        radial-gradient(1.8px 1.8px at 67% 23%, rgba(232,160,191,0.55), transparent),
+        radial-gradient(1.4px 1.4px at 70% 16%, rgba(232,160,191,0.48), transparent),
+        radial-gradient(1.2px 1.2px at 74% 8%,  rgba(232,160,191,0.46), transparent),
+        radial-gradient(1.7px 1.7px at 77% 21%, rgba(232,160,191,0.52), transparent),
+        radial-gradient(1.0px 1.0px at 81% 14%, rgba(232,160,191,0.43), transparent),
+        radial-gradient(1.5px 1.5px at 84% 20%, rgba(232,160,191,0.5), transparent),
+        radial-gradient(1.6px 1.6px at 88% 12%, rgba(232,160,191,0.4), transparent),
+        radial-gradient(1.3px 1.3px at 91% 19%, rgba(232,160,191,0.48), transparent),
+        radial-gradient(1.4px 1.4px at 94% 13%, rgba(232,160,191,0.44), transparent),
+        radial-gradient(0.9px 0.9px at 97% 22%, rgba(232,160,191,0.38), transparent),
+        /* ══════ 金色星 ══════ */
+        radial-gradient(1.6px 1.6px at 4% 9%,   rgba(232,197,100,0.5), transparent),
+        radial-gradient(1.3px 1.3px at 9% 5%,   rgba(232,197,100,0.52), transparent),
+        radial-gradient(1.8px 1.8px at 15% 10%, rgba(232,197,100,0.45), transparent),
+        radial-gradient(1.2px 1.2px at 19% 6%,  rgba(232,197,100,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 24% 11%, rgba(232,197,100,0.48), transparent),
+        radial-gradient(1.8px 1.8px at 28% 5%,  rgba(232,197,100,0.55), transparent),
+        radial-gradient(1.3px 1.3px at 31% 13%, rgba(232,197,100,0.42), transparent),
+        radial-gradient(1.7px 1.7px at 36% 7%,  rgba(232,197,100,0.52), transparent),
+        radial-gradient(1.2px 1.2px at 41% 12%, rgba(232,197,100,0.42), transparent),
+        radial-gradient(1.6px 1.6px at 44% 6%,  rgba(232,197,100,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 50% 8%,  rgba(232,197,100,0.5), transparent),
+        radial-gradient(1.8px 1.8px at 53% 3%,  rgba(232,197,100,0.55), transparent),
+        radial-gradient(1.3px 1.3px at 57% 12%, rgba(232,197,100,0.52), transparent),
+        radial-gradient(1.7px 1.7px at 61% 7%,  rgba(232,197,100,0.48), transparent),
+        radial-gradient(1.1px 1.1px at 65% 11%, rgba(232,197,100,0.4), transparent),
+        radial-gradient(1.5px 1.5px at 68% 5%,  rgba(232,197,100,0.5), transparent),
+        radial-gradient(1.4px 1.4px at 73% 11%, rgba(232,197,100,0.48), transparent),
+        radial-gradient(1.6px 1.6px at 76% 4%,  rgba(232,197,100,0.5), transparent),
+        radial-gradient(1.3px 1.3px at 79% 14%, rgba(232,197,100,0.44), transparent),
+        radial-gradient(1.6px 1.6px at 83% 7%,  rgba(232,197,100,0.48), transparent),
+        radial-gradient(1.2px 1.2px at 87% 10%, rgba(232,197,100,0.42), transparent),
+        radial-gradient(1.5px 1.5px at 91% 5%,  rgba(232,197,100,0.48), transparent),
+        radial-gradient(1.4px 1.4px at 95% 8%,  rgba(232,197,100,0.45), transparent),
+        /* ══════ 中段密集星 25-50% ══════ */
+        radial-gradient(1.0px 1.0px at 2% 28%,  rgba(255,255,255,0.4), transparent),
+        radial-gradient(0.8px 0.8px at 5% 25%,  rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.7px 0.7px at 9% 30%,  rgba(255,255,255,0.3), transparent),
+        radial-gradient(1.1px 1.1px at 12% 26%, rgba(255,255,255,0.36), transparent),
+        radial-gradient(0.8px 0.8px at 15% 32%, rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.6px 0.6px at 18% 27%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(1.1px 1.1px at 22% 33%, rgba(255,255,255,0.38), transparent),
+        radial-gradient(0.9px 0.9px at 25% 28%, rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.6px 0.6px at 28% 34%, rgba(255,255,255,0.26), transparent),
+        radial-gradient(1.0px 1.0px at 31% 29%, rgba(255,255,255,0.36), transparent),
+        radial-gradient(0.9px 0.9px at 34% 33%, rgba(232,160,191,0.35), transparent),
+        radial-gradient(0.7px 0.7px at 37% 26%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1.1px 1.1px at 40% 35%, rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.6px 0.6px at 43% 28%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(1.0px 1.0px at 47% 35%, rgba(232,197,100,0.32), transparent),
+        radial-gradient(0.8px 0.8px at 50% 29%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(0.6px 0.6px at 53% 34%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.9px 0.9px at 56% 27%, rgba(255,255,255,0.32), transparent),
+        radial-gradient(0.8px 0.8px at 59% 34%, rgba(255,255,255,0.32), transparent),
+        radial-gradient(1.0px 1.0px at 62% 29%, rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.5px 0.5px at 65% 33%, rgba(255,255,255,0.24), transparent),
+        radial-gradient(0.9px 0.9px at 68% 27%, rgba(232,160,191,0.3), transparent),
+        radial-gradient(0.7px 0.7px at 71% 36%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(0.8px 0.8px at 74% 30%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1.0px 1.0px at 77% 35%, rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.6px 0.6px at 80% 28%, rgba(255,255,255,0.26), transparent),
+        radial-gradient(0.9px 0.9px at 83% 35%, rgba(255,255,255,0.34), transparent),
+        radial-gradient(0.7px 0.7px at 86% 29%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.6px 0.6px at 89% 34%, rgba(255,255,255,0.25), transparent),
+        radial-gradient(0.8px 0.8px at 92% 27%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(0.5px 0.5px at 95% 33%, rgba(232,197,100,0.28), transparent),
+        /* ── 中段补充 35-50% ── */
+        radial-gradient(0.9px 0.9px at 3% 42%,  rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.6px 0.6px at 7% 38%,  rgba(255,255,255,0.3), transparent),
+        radial-gradient(0.5px 0.5px at 10% 45%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(0.8px 0.8px at 13% 40%, rgba(255,255,255,0.26), transparent),
+        radial-gradient(0.7px 0.7px at 16% 44%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(1.0px 1.0px at 19% 37%, rgba(255,255,255,0.26), transparent),
+        radial-gradient(0.6px 0.6px at 22% 46%, rgba(255,255,255,0.22), transparent),
+        radial-gradient(0.8px 0.8px at 26% 40%, rgba(232,160,191,0.28), transparent),
+        radial-gradient(0.5px 0.5px at 29% 43%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(0.9px 0.9px at 33% 37%, rgba(255,255,255,0.24), transparent),
+        radial-gradient(0.6px 0.6px at 36% 45%, rgba(255,255,255,0.24), transparent),
+        radial-gradient(0.7px 0.7px at 39% 38%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.5px 0.5px at 42% 47%, rgba(255,255,255,0.18), transparent),
+        radial-gradient(0.8px 0.8px at 46% 41%, rgba(232,197,100,0.22), transparent),
+        radial-gradient(0.7px 0.7px at 49% 37%, rgba(255,255,255,0.26), transparent),
+        radial-gradient(0.6px 0.6px at 52% 45%, rgba(255,255,255,0.22), transparent),
+        radial-gradient(0.9px 0.9px at 55% 39%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(0.5px 0.5px at 58% 46%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(0.8px 0.8px at 61% 41%, rgba(255,255,255,0.24), transparent),
+        radial-gradient(0.6px 0.6px at 64% 47%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(0.7px 0.7px at 68% 40%, rgba(232,160,191,0.25), transparent),
+        radial-gradient(0.5px 0.5px at 70% 47%, rgba(255,255,255,0.22), transparent),
+        radial-gradient(0.8px 0.8px at 73% 43%, rgba(255,255,255,0.24), transparent),
+        radial-gradient(0.6px 0.6px at 76% 38%, rgba(255,255,255,0.22), transparent),
+        radial-gradient(0.9px 0.9px at 79% 48%, rgba(255,255,255,0.24), transparent),
+        radial-gradient(0.5px 0.5px at 82% 42%, rgba(255,255,255,0.18), transparent),
+        radial-gradient(0.7px 0.7px at 85% 47%, rgba(255,255,255,0.22), transparent),
+        radial-gradient(0.6px 0.6px at 88% 39%, rgba(255,255,255,0.18), transparent),
+        radial-gradient(0.8px 0.8px at 91% 47%, rgba(232,197,100,0.22), transparent),
+        radial-gradient(0.5px 0.5px at 94% 41%, rgba(255,255,255,0.2), transparent),
+        /* ══════ 下部稀疏星 50-70% ══════ */
+        radial-gradient(0.5px 0.5px at 2% 54%,  rgba(255,255,255,0.15), transparent),
+        radial-gradient(0.4px 0.4px at 6% 50%,  rgba(255,255,255,0.12), transparent),
+        radial-gradient(0.6px 0.6px at 10% 57%, rgba(255,255,255,0.16), transparent),
+        radial-gradient(0.3px 0.3px at 14% 52%, rgba(255,255,255,0.1), transparent),
+        radial-gradient(0.5px 0.5px at 18% 60%, rgba(255,255,255,0.14), transparent),
+        radial-gradient(0.6px 0.6px at 22% 53%, rgba(255,255,255,0.16), transparent),
+        radial-gradient(0.4px 0.4px at 26% 58%, rgba(255,255,255,0.13), transparent),
+        radial-gradient(0.5px 0.5px at 30% 55%, rgba(232,160,191,0.14), transparent),
+        radial-gradient(0.3px 0.3px at 34% 60%, rgba(255,255,255,0.1), transparent),
+        radial-gradient(0.5px 0.5px at 38% 53%, rgba(255,255,255,0.14), transparent),
+        radial-gradient(0.6px 0.6px at 42% 61%, rgba(255,255,255,0.15), transparent),
+        radial-gradient(0.4px 0.4px at 46% 56%, rgba(255,255,255,0.12), transparent),
+        radial-gradient(0.5px 0.5px at 50% 59%, rgba(255,255,255,0.14), transparent),
+        radial-gradient(0.3px 0.3px at 54% 54%, rgba(255,255,255,0.1), transparent),
+        radial-gradient(0.6px 0.6px at 58% 63%, rgba(232,197,100,0.14), transparent),
+        radial-gradient(0.4px 0.4px at 62% 57%, rgba(255,255,255,0.11), transparent),
+        radial-gradient(0.5px 0.5px at 66% 53%, rgba(255,255,255,0.13), transparent),
+        radial-gradient(0.3px 0.3px at 70% 60%, rgba(255,255,255,0.1), transparent),
+        radial-gradient(0.5px 0.5px at 74% 56%, rgba(255,255,255,0.13), transparent),
+        radial-gradient(0.4px 0.4px at 78% 62%, rgba(255,255,255,0.11), transparent),
+        radial-gradient(0.6px 0.6px at 82% 57%, rgba(232,160,191,0.12), transparent),
+        radial-gradient(0.3px 0.3px at 86% 63%, rgba(255,255,255,0.09), transparent),
+        radial-gradient(0.5px 0.5px at 89% 58%, rgba(255,255,255,0.12), transparent),
+        radial-gradient(0.4px 0.4px at 93% 55%, rgba(255,255,255,0.1), transparent),
+        radial-gradient(0.3px 0.3px at 96% 63%, rgba(255,255,255,0.08), transparent),
+        /* ── 最底层微星 ── */
+        radial-gradient(0.3px 0.3px at 4% 68%,  rgba(255,255,255,0.07), transparent),
+        radial-gradient(0.2px 0.2px at 10% 64%, rgba(255,255,255,0.05), transparent),
+        radial-gradient(0.3px 0.3px at 16% 70%, rgba(255,255,255,0.06), transparent),
+        radial-gradient(0.2px 0.2px at 22% 64%, rgba(255,255,255,0.05), transparent),
+        radial-gradient(0.3px 0.3px at 28% 72%, rgba(255,255,255,0.06), transparent),
+        radial-gradient(0.2px 0.2px at 34% 66%, rgba(232,160,191,0.05), transparent),
+        radial-gradient(0.3px 0.3px at 40% 70%, rgba(255,255,255,0.06), transparent),
+        radial-gradient(0.2px 0.2px at 48% 64%, rgba(255,255,255,0.05), transparent),
+        radial-gradient(0.3px 0.3px at 56% 71%, rgba(255,255,255,0.06), transparent),
+        radial-gradient(0.2px 0.2px at 62% 66%, rgba(255,255,255,0.05), transparent),
+        radial-gradient(0.3px 0.3px at 70% 72%, rgba(232,160,191,0.06), transparent),
+        radial-gradient(0.2px 0.2px at 78% 67%, rgba(255,255,255,0.04), transparent),
+        radial-gradient(0.3px 0.3px at 85% 71%, rgba(255,255,255,0.05), transparent),
+        radial-gradient(0.2px 0.2px at 92% 68%, rgba(255,255,255,0.04), transparent),
+        /* ══════ 左上角繁星聚集 0-40% / 0-25% ══════ */
+        radial-gradient(1.4px 1.4px at 3% 2%,   rgba(255,255,255,0.75), transparent),
+        radial-gradient(0.6px 0.6px at 5% 7%,   rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.0px 1.0px at 7% 12%,  rgba(255,255,255,0.55), transparent),
+        radial-gradient(0.8px 0.8px at 10% 4%,  rgba(232,160,191,0.55), transparent),
+        radial-gradient(1.2px 1.2px at 12% 15%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(0.5px 0.5px at 14% 8%,  rgba(255,255,255,0.45), transparent),
+        radial-gradient(0.7px 0.7px at 16% 19%, rgba(232,197,100,0.48), transparent),
+        radial-gradient(1.1px 1.1px at 18% 3%,  rgba(255,255,255,0.58), transparent),
+        radial-gradient(0.9px 0.9px at 20% 21%, rgba(255,255,255,0.52), transparent),
+        radial-gradient(0.6px 0.6px at 22% 11%, rgba(232,160,191,0.5), transparent),
+        radial-gradient(1.3px 1.3px at 24% 6%,  rgba(255,255,255,0.62), transparent),
+        radial-gradient(0.5px 0.5px at 26% 17%, rgba(255,255,255,0.42), transparent),
+        radial-gradient(0.8px 0.8px at 29% 9%,  rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.0px 1.0px at 31% 22%, rgba(232,197,100,0.5), transparent),
+        radial-gradient(0.7px 0.7px at 33% 14%, rgba(255,255,255,0.48), transparent),
+        radial-gradient(1.2px 1.2px at 36% 5%,  rgba(232,160,191,0.55), transparent),
+        radial-gradient(0.6px 0.6px at 38% 20%, rgba(255,255,255,0.45), transparent),
+        radial-gradient(0.9px 0.9px at 6% 24%,  rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.1px 1.1px at 9% 16%,  rgba(232,197,100,0.52), transparent),
+        radial-gradient(0.5px 0.5px at 13% 22%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(0.8px 0.8px at 17% 10%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.0px 1.0px at 21% 18%, rgba(232,160,191,0.48), transparent),
+        radial-gradient(0.6px 0.6px at 25% 14%, rgba(255,255,255,0.44), transparent),
+        radial-gradient(0.9px 0.9px at 28% 23%, rgba(255,255,255,0.46), transparent),
+        radial-gradient(1.1px 1.1px at 32% 8%,  rgba(255,255,255,0.55), transparent),
+        radial-gradient(0.5px 0.5px at 35% 19%, rgba(232,197,100,0.42), transparent),
+        radial-gradient(0.7px 0.7px at 39% 12%, rgba(255,255,255,0.48), transparent),
+        radial-gradient(0.8px 0.8px at 2% 17%,  rgba(255,255,255,0.5), transparent),
+        radial-gradient(0.6px 0.6px at 8% 21%,  rgba(232,160,191,0.45), transparent),
+        radial-gradient(1.0px 1.0px at 15% 13%, rgba(255,255,255,0.52), transparent),
+        radial-gradient(0.7px 0.7px at 19% 16%, rgba(255,255,255,0.46), transparent),
+        radial-gradient(0.9px 0.9px at 23% 20%, rgba(232,197,100,0.48), transparent),
+        radial-gradient(0.5px 0.5px at 27% 24%, rgba(255,255,255,0.38), transparent),
+        radial-gradient(1.0px 1.0px at 30% 11%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(0.6px 0.6px at 34% 18%, rgba(232,160,191,0.46), transparent),
+        radial-gradient(0.8px 0.8px at 37% 7%,  rgba(255,255,255,0.5), transparent),
+        radial-gradient(0.7px 0.7px at 4% 14%,  rgba(255,255,255,0.48), transparent),
+        radial-gradient(1.1px 1.1px at 11% 10%, rgba(232,197,100,0.5), transparent),
+        radial-gradient(0.5px 0.5px at 16% 23%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(0.8px 0.8px at 22% 7%,  rgba(255,255,255,0.5), transparent),
+        radial-gradient(0.6px 0.6px at 26% 19%, rgba(232,160,191,0.42), transparent),
+        radial-gradient(1.0px 1.0px at 29% 15%, rgba(255,255,255,0.52), transparent),
+        radial-gradient(0.7px 0.7px at 33% 21%, rgba(255,255,255,0.45), transparent),
+        radial-gradient(0.9px 0.9px at 36% 10%, rgba(232,197,100,0.5), transparent),
+        radial-gradient(0.5px 0.5px at 7% 19%,  rgba(255,255,255,0.42), transparent),
+        radial-gradient(0.8px 0.8px at 14% 6%,  rgba(255,255,255,0.5), transparent),
+        radial-gradient(0.6px 0.6px at 20% 12%, rgba(232,160,191,0.48), transparent),
+        radial-gradient(1.0px 1.0px at 27% 8%,  rgba(255,255,255,0.55), transparent),
+        radial-gradient(0.7px 0.7px at 35% 16%, rgba(255,255,255,0.46), transparent),
+        radial-gradient(0.5px 0.5px at 39% 22%, rgba(232,160,191,0.4), transparent);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 80%);
+    mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 80%);
+    animation: twinkleStars 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkleStars {
+    0%   { opacity: 0.5; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.65; }
+}
+
+/* 流星 ①：抛物线，左上 → 右下，金色 */
+body::after {
+    content: '';
+    position: fixed;
+    top: -160px;
+    left: -80px;
+    width: 80px;
+    height: 1px;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.9) 15%, rgba(232,197,100,0.9) 55%, transparent 100%);
+    border-radius: 0.5px;
+    transform: rotate(25deg);
+    box-shadow: 0 0 10px rgba(232,197,100,0.4), 0 0 24px rgba(255,255,255,0.15);
+    animation: meteor1 7s linear infinite;
+}
+
+@keyframes meteor1 {
+    0%   { top: -180px; left: -100px; opacity: 0; }
+    2%   { opacity: 1; }
+    20%  { top: 200px;  left: 120px;  opacity: 1; }
+    50%  { top: 700px;  left: 480px;  opacity: 0.6; }
+    70%  { top: 1250px; left: 960px;  opacity: 0; }
+    100% { top: 1250px; left: 960px;  opacity: 0; }
+}
+
+/* 流星 ②：抛物线，左上 → 右下，粉色 */
+.footer::before {
+    content: '';
+    position: fixed;
+    top: -220px;
+    left: -140px;
+    width: 60px;
+    height: 0.75px;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(to right, transparent 0%, rgba(232,160,191,0.85) 20%, rgba(255,255,255,0.7) 60%, transparent 100%);
+    border-radius: 0.5px;
+    transform: rotate(30deg);
+    box-shadow: 0 0 6px rgba(232,160,191,0.35), 0 0 16px rgba(255,255,255,0.1);
+    animation: meteor2 10s linear 3s infinite;
+}
+
+@keyframes meteor2 {
+    0%   { top: -240px; left: -160px; opacity: 0; }
+    2%   { opacity: 1; }
+    18%  { top: 150px;  left: 60px;   opacity: 1; }
+    48%  { top: 650px;  left: 440px;  opacity: 0.5; }
+    68%  { top: 1200px; left: 920px;  opacity: 0; }
+    100% { top: 1200px; left: 920px;  opacity: 0; }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+
+/* ============ Typography ============ */
+h1 {
+    font-family: 'Inter', 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-family: 'Inter', 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    font-family: 'Inter', 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', sans-serif;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.text-gold   { color: var(--gold-400); }
+.text-blue   { color: var(--blue-400); }
+.text-muted  { color: var(--text-secondary); }
+
+/* ============ Cover Section ============ */
+.cover {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background: var(--bg-deep);
+    overflow: hidden;
+}
+
+/* 封面柔和光晕：金色 + 粉色 */
+.cover::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 700px;
+    background:
+        radial-gradient(ellipse at 40% 50%, rgba(232, 160, 191, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 50%, rgba(232, 197, 100, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* 星光粒子 */
+.cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 35% 65%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1.5px 1.5px at 75% 45%, rgba(255,255,255,0.35), transparent),
+        radial-gradient(1px 1px at 85% 75%, rgba(232,160,191,0.45), transparent),
+        radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1.5px 1.5px at 65% 80%, rgba(232,160,191,0.4), transparent),
+        radial-gradient(1px 1px at 10% 50%, rgba(255,255,255,0.25), transparent),
+        radial-gradient(1px 1px at 90% 20%, rgba(232,160,191,0.5), transparent);
+    pointer-events: none;
+    animation: starDrift 8s ease-in-out infinite alternate;
+}
+
+@keyframes starDrift {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.cover-content {
+    position: relative;
+    z-index: 1;
+    max-width: var(--content-narrow);
+}
+
+.cover h1 {
+    color: var(--gold-400);
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+.cover .subtitle {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+    line-height: 1.8;
+}
+
+.cover .data-hook {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(232, 197, 100, 0.15);
+    border-radius: 32px;
+    padding: 0.5rem 1.5rem;
+    margin: 2rem 0 2.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gold-300);
+    letter-spacing: 0.01em;
+    box-shadow: var(--glow-gold);
+    transition: transform 0.3s var(--ease-spring), border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+    cursor: default;
+}
+
+.cover .data-hook:hover {
+    transform: scale(1.04);
+    border-color: rgba(232, 197, 100, 0.3);
+    box-shadow: var(--glow-gold), 0 0 40px rgba(232, 197, 100, 0.08);
+}
+
+/* data-hook 左侧指示点 */
+.cover .data-hook::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold-400);
+    box-shadow: 0 0 10px rgba(232, 197, 100, 0.5);
+    flex-shrink: 0;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-tertiary);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    animation: bounce 3s ease-in-out infinite;
+    transition: opacity 0.3s var(--ease-out), color 0.3s var(--ease-out);
+    cursor: pointer;
+}
+
+.scroll-indicator:hover {
+    animation: none;
+    opacity: 1;
+    color: var(--gold-300);
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+}
+
+.scroll-indicator svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.4;
+    transition: opacity 0.3s var(--ease-out);
+}
+
+.scroll-indicator:hover svg {
+    opacity: 0.8;
+}
+
+/* ============ Scene Sections ============ */
+.scene {
+    position: relative;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+}
+
+.scene-inner {
+    max-width: var(--content-scene);
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.scene-inner.reverse {
+    direction: rtl;
+}
+
+.scene-inner.reverse>* {
+    direction: ltr;
+}
+
+/* 堆叠布局：图在上，文在下 */
+.scene-inner.stacked {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.scene-inner.stacked .scene-text {
+    max-width: var(--content-narrow);
+    margin: 0 auto;
+}
+
+.scene-inner.stacked .illustration-box {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ============ Scene Visual (Left Panel) ============ */
+.scene-visual {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.illustration-box {
+    width: 100%;
+    max-width: 540px;
+    aspect-ratio: 3 / 4;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255,255,255,0.03),
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset 0 -1px 0 rgba(0,0,0,0.15);
+    transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
+}
+
+.illustration-box:hover {
+    transform: scale(1.015);
+    border-color: rgba(255,255,255,0.1);
+    box-shadow:
+        0 28px 72px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 0 50px rgba(107,159,255,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 -1px 0 rgba(0,0,0,0.15);
+}
+
+/* ============ Character Image Container ============ */
+.char-image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at center, var(--bg-raised) 0%, var(--bg-deep) 100%);
+}
+
+.char-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.char-image-container img:hover {
+    filter: brightness(1.06);
+    transform: scale(1.02);
+}
+
+.char-image-container img:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}
+
+/* ============ Character Hint ============ */
+.char-hint {
+    text-align: center;
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    letter-spacing: 0.03em;
+    transition: opacity 0.4s ease;
+}
+
+.char-hint span {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 0.3rem 1rem;
+}
+
+
+
+
+.time-tag {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: rgba(232, 197, 100, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--gold-400);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.4rem 1.1rem;
+    border-radius: 20px;
+    z-index: 5;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(232, 197, 100, 0.15);
+}
+
+.character-label {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--gold-200);
+    font-size: 0.88rem;
+    padding: 0.35rem 1.2rem;
+    border-radius: 16px;
+    white-space: nowrap;
+    z-index: 5;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============ Scene Text (Right Panel) ============ */
+.scene-text {
+    max-width: 480px;
+}
+
+.scene-text h2 {
+    color: var(--gold-300);
+    margin-bottom: 0.8rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.scene-text .quote {
+    font-size: 1.15rem;
+    color: var(--gold-200);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    border-left: 3px solid var(--gold-400);
+    padding-left: 1.2rem;
+    margin: 1rem 0;
+    line-height: 1.7;
+}
+
+.scene-text .narration {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+    line-height: 1.9;
+}
+
+/* ============ Data Card ============ */
+.data-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius-sm);
+    padding: 1.2rem 1.5rem;
+    margin-top: 1rem;
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        inset 0 -1px 0 rgba(0,0,0,0.1);
+}
+
+.data-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255,255,255,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        inset 0 -1px 0 rgba(0,0,0,0.12);
+}
+
+.data-card .data-number {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--gold-400);
+    display: block;
+    line-height: 1.2;
+}
+
+.data-card .data-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+}
+
+.data-card .data-source {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.6rem;
+    opacity: 0.6;
+}
+
+.data-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.data-row .data-card {
+    flex: 1;
+    min-width: 150px;
+    margin-top: 0;
+}
+
+/* ============ Chart Lead-in ============ */
+.chart-lead {
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.03em;
+}
+
+/* ============ Gender Dumbbell Chart ============ */
+.gender-compare {
+    margin-top: 1rem;
+    padding: 1.5rem 2rem;
+}
+
+.gc-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 1.6rem;
+    position: relative;
+}
+
+.gc-label {
+    width: 110px;
+    flex-shrink: 0;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    text-align: right;
+    padding-right: 1rem;
+}
+
+.gc-left-val,
+.gc-right-val {
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.gc-left-val  { color: #e8a0bf; text-align: right; width: 70px; flex-shrink: 0; }
+.gc-right-val { color: #8bb5ff; text-align: left;  width: 70px; flex-shrink: 0; }
+
+.gc-unit {
+    font-size: 0.7rem;
+    font-weight: 400;
+    opacity: 0.7;
+}
+
+.gc-track {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    position: relative;
+    margin: 0 12px;
+}
+
+.gc-line {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(to right, rgba(232,160,191,0.5), rgba(107,159,255,0.5));
+    border-radius: 1px;
+    transition: left 0.7s var(--ease-out), right 0.7s var(--ease-out);
+}
+
+.gc-dot {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: left 0.7s var(--ease-out);
+}
+
+.gc-dot.female {
+    background: #e8a0bf;
+    box-shadow: 0 0 10px rgba(232,160,191,0.4);
+}
+
+.gc-dot.male {
+    background: #6b9fff;
+    box-shadow: 0 0 10px rgba(107,159,255,0.4);
+}
+
+.gc-legend {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.8rem;
+}
+
+.gc-legend span { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); }
+
+.gc-legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.gc-legend .dot.f { background: #e8a0bf; box-shadow: 0 0 6px rgba(232,160,191,0.3); }
+.gc-legend .dot.m { background: #6b9fff; box-shadow: 0 0 6px rgba(107,159,255,0.3); }
+
+/* ============ Chart Container ============ */
+.chart-container {
+    padding: 1.5rem;
+    margin-top: 1rem;
+    position: relative;
+    height: 360px;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ============ Transition Lines ============ */
+.transition-line {
+    text-align: center;
+    padding: 2.6rem 2rem;
+    font-size: 1.25rem;
+    color: var(--gold-300);
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    max-width: var(--content-narrow);
+    margin: 0 auto;
+    position: relative;
+    line-height: 2;
+    transition: color 0.3s var(--ease-out);
+}
+
+.transition-line:hover {
+    color: var(--gold-200);
+}
+
+/* 顶部装饰横线 */
+.transition-line::before {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(to right, var(--rose), var(--gold-400));
+    border-radius: 1px;
+    margin: 0 auto 1.4rem;
+    opacity: 0.45;
+    transition: width 0.4s var(--ease-spring), opacity 0.3s var(--ease-out);
+}
+
+.transition-line:hover::before {
+    width: 70px;
+    opacity: 0.7;
+}
+
+/* 底部装饰横线 */
+.transition-line::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold-400), var(--rose));
+    border-radius: 1px;
+    margin: 1.4rem auto 0;
+    opacity: 0.45;
+    transition: width 0.4s var(--ease-spring), opacity 0.3s var(--ease-out);
+}
+
+.transition-line:hover::after {
+    width: 70px;
+    opacity: 0.7;
+}
+
+/* ============ Family Intro Cards ============ */
+.family-intro {
+    min-height: 100vh;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.family-intro .intro-headline {
+    color: var(--gold-400);
+    text-align: center;
+    margin-bottom: 0.8rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.family-intro .intro-sub {
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.character-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    max-width: var(--content-scene);
+    width: 100%;
+}
+
+.char-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+    cursor: default;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        inset 0 -1px 0 rgba(0,0,0,0.1);
+}
+
+.char-card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255,255,255,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        inset 0 -1px 0 rgba(0,0,0,0.12);
+}
+
+.char-card .char-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.char-card .char-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: opacity 0.15s ease-in-out, transform 0.2s ease;
+    opacity: 0;
+}
+
+.char-card .char-avatar img:hover {
+    transform: scale(1.1);
+}
+
+.char-card .char-avatar img:active {
+    transform: scale(0.95);
+}
+
+.char-card .char-avatar.grandma {
+    background: linear-gradient(135deg, #4a3a5e, #3a2a4e);
+}
+
+.char-card .char-avatar.father {
+    background: linear-gradient(135deg, #2a4060, #1a3050);
+}
+
+.char-card .char-avatar.mother {
+    background: linear-gradient(135deg, #3a3550, #2a2540);
+}
+
+.char-card .char-avatar.son {
+    background: linear-gradient(135deg, #2a3a50, #1a2a40);
+}
+
+.char-card .char-avatar.daughter {
+    background: linear-gradient(135deg, #3a3050, #2a2040);
+}
+
+.char-card .char-name {
+    color: var(--gold-400);
+    font-weight: 500;
+    font-size: 1.15rem;
+}
+
+.char-card .char-role {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    margin: 0.4rem 0;
+}
+
+.char-card .char-issue {
+    color: var(--blue-400);
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+    line-height: 1.5;
+}
+
+/* ============ Scene Backgrounds ============ */
+.scene-son {
+    background: var(--bg-deep);
+}
+
+.scene-daughter {
+    background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-base) 50%, var(--bg-deep) 100%);
+}
+
+.scene-father {
+    background: var(--bg-deep);
+}
+
+.scene-mother {
+    background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-base) 50%, var(--bg-deep) 100%);
+}
+
+.scene-grandma {
+    background: var(--bg-deep);
+}
+
+/* 数据段落背景 */
+.data-section {
+    background: var(--bg-base);
+    padding: 2.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 数据段落装饰纹理：金光 + 粉光 + 蓝光 */
+.data-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 15% 40%, rgba(232, 197, 100, 0.025) 0, transparent 55%),
+        radial-gradient(circle at 85% 60%, rgba(107, 159, 255, 0.02) 0, transparent 55%),
+        radial-gradient(circle at 50% 30%, rgba(232, 160, 191, 0.025) 0, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.015) 0, transparent 45%);
+    pointer-events: none;
+}
+
+/* 数据段落右下角：粉调菱形 */
+.data-section::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    bottom: -30px;
+    width: 100px;
+    height: 100px;
+    border: 1px solid rgba(232, 160, 191, 0.08);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+/* 几何装饰：章节分隔点阵 */
+.section-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 1rem 0;
+    opacity: 0.3;
+    transition: opacity 0.3s var(--ease-out);
+}
+
+.section-ornament:hover {
+    opacity: 0.55;
+}
+
+.section-ornament::before,
+.section-ornament::after {
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: var(--gold-400);
+}
+
+.section-ornament .dot {
+    width: 5px;
+    height: 5px;
+    background: var(--rose);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--rose-soft);
+    transition: box-shadow 0.3s var(--ease-out);
+}
+
+.section-ornament:hover .dot {
+    box-shadow: 0 0 16px var(--rose-soft);
+}
+
+.scene-morning {
+    background: linear-gradient(180deg, #121e38 0%, #162544 30%, #1b3054 60%, var(--bg-deep) 100%);
+}
+
+/* 早晨场景：横版图片，上下布局 */
+.scene-morning .scene-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+}
+
+.scene-morning .scene-visual {
+    order: -1;
+}
+
+.scene-morning .illustration-box {
+    max-width: 900px;
+    aspect-ratio: auto;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.scene-morning .char-image-container {
+    position: relative;
+    width: 100%;
+    background: transparent;
+}
+
+.scene-morning .char-image-container img {
+    object-fit: contain;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* 早晨场景时间标签移到图外 */
+.scene-morning .time-tag {
+    position: static;
+    display: inline-block;
+    margin-bottom: 0.8rem;
+    background: rgba(245, 214, 123, 0.2);
+    color: var(--gold-300);
+    border: 1px solid rgba(245, 214, 123, 0.35);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.5rem 1.4rem;
+}
+
+.scene-morning .scene-text {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.scene-morning .scene-text .narration {
+    text-align: center;
+}
+
+.scene-morning .scene-text .data-card {
+    max-width: 400px;
+    margin: 1rem auto 0;
+}
+
+/* ============ Finale ============ */
+.scene-finale {
+    min-height: 100vh;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-deep);
+    text-align: center;
+}
+
+.finale-text {
+    max-width: var(--content-narrow);
+}
+
+.finale-text h2 {
+    color: var(--gold-400);
+    margin-bottom: 1.8rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.finale-text .poem-line {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin: 0.5rem 0;
+    line-height: 2;
+}
+
+.finale-text .closing {
+    margin-top: 2.5rem;
+    color: var(--text-secondary);
+    line-height: 2.2;
+    font-size: 1.05rem;
+}
+
+.finale-text .closing strong {
+    color: var(--gold-400);
+}
+
+/* ============ Data Summary ============ */
+.data-summary {
+    max-width: var(--content-wide);
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.data-summary h2 {
+    color: var(--gold-400);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+/* ============ Footer ============ */
+.footer {
+    background: var(--bg-deep);
+    padding: 2rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.footer-inner {
+    max-width: var(--content-wide);
+    margin: 0 auto;
+}
+
+.footer h3 {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.footer .source-list {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.75;
+}
+
+.footer .source-list li {
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* ============ Fade-in Animation ============ */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============ SVG Illustration Helpers ============ */
+.svg-glow-warm {
+    filter: blur(20px);
+}
+
+.svg-glow-blue {
+    filter: blur(16px);
+}
+
+/* ============ Loading State ============ */
+#page-loading {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    background: var(--bg-deep);
+    z-index: 9999;
+    transition: opacity 0.5s var(--ease-out), visibility 0.5s var(--ease-out);
+}
+
+#page-loading.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loading-icon {
+    font-size: 2.5rem;
+    animation: loadingPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.95); }
+    50%      { opacity: 1;   transform: scale(1.05); }
+}
+
+.loading-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+}
+
+.loading-dots i {
+    display: inline-block;
+    color: var(--gold-400);
+    font-style: normal;
+    animation: loadingDot 1.4s ease-in-out infinite;
+}
+
+.loading-dots i:nth-child(1) { animation-delay: 0s; }
+.loading-dots i:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots i:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes loadingDot {
+    0%, 80%, 100% { opacity: 0.2; }
+    40%           { opacity: 1; }
+}
+
+/* ============ Responsive ============ */
+@media (max-width: 1000px) {
+    .character-cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .scene-inner {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .scene-inner.reverse {
+        direction: ltr;
+    }
+
+    .scene-visual {
+        order: -1;
+    }
+
+    .illustration-box {
+        max-width: 400px;
+        aspect-ratio: 3 / 4;
+    }
+
+    .scene {
+        padding: 2rem 1.2rem;
+        min-height: auto;
+    }
+
+    .character-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .data-row {
+        flex-direction: column;
+    }
+
+    .transition-line {
+        font-size: 1.15rem;
+        padding: 2rem 1.5rem;
+    }
+
+    .scene-text h2 {
+        font-size: 1.3rem;
+    }
+
+    #back-to-top {
+        bottom: 1.2rem;
+        right: 1.2rem;
+        width: 36px;
+        height: 36px;
+    }
+
+    #back-to-top svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* ============================================================
+   互动自测模块样式
+   ============================================================ */
+
+/* ============ Quiz Section Layout ============ */
+.quiz-section {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+}
+
+.quiz-wrapper {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    padding: 2.5rem 2rem;
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255,255,255,0.03),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        inset 0 -1px 0 rgba(0,0,0,0.1);
+}
+
+/* ============ Quiz Header ============ */
+.quiz-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.quiz-title {
+    color: var(--gold-400);
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    margin-bottom: 0.5rem;
+}
+
+.quiz-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* ============ Quiz Progress ============ */
+.quiz-progress {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.quiz-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-400), var(--blue-400));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 25%;
+}
+
+.quiz-progress-text {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* ============ Quiz Question Area ============ */
+.quiz-question-area {
+    min-height: 200px;
+}
+
+.quiz-question {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.quiz-fade-in {
+    animation: quizFadeIn 0.4s ease-out;
+}
+
+@keyframes quizFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============ Quiz Options ============ */
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quiz-option {
+    display: block;
+    width: 100%;
+    padding: 1rem 1.2rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.5;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+
+.quiz-option:hover {
+    background: rgba(91, 141, 239, 0.12);
+    border-color: var(--blue-400);
+    transform: translateX(4px);
+}
+
+.quiz-option.selected {
+    background: rgba(245, 214, 123, 0.12);
+    border-color: var(--gold-400);
+    color: var(--gold-400);
+    font-weight: 600;
+}
+
+/* ============ Quiz Nav ============ */
+.quiz-nav {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* ============ Quiz Buttons ============ */
+.quiz-btn {
+    padding: 0.7rem 1.6rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.95rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.quiz-btn-back {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quiz-btn-back:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.quiz-btn-jump {
+    background: linear-gradient(135deg, var(--blue-400), var(--blue-300));
+    color: #fff;
+    font-weight: 600;
+    padding: 0.85rem 2rem;
+    border-radius: 12px;
+}
+
+.quiz-btn-jump:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(91, 141, 239, 0.35);
+}
+
+.quiz-btn-ai {
+    background: linear-gradient(135deg, var(--gold-400), #e8a840);
+    color: var(--bg-deep);
+    font-weight: 600;
+    padding: 0.85rem 2rem;
+    border-radius: 12px;
+}
+
+.quiz-btn-ai:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 214, 123, 0.35);
+}
+
+.quiz-btn-retry {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quiz-btn-retry:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+/* ============ Quiz Result ============ */
+.quiz-result {
+    text-align: center;
+}
+
+.result-header {
+    margin-bottom: 2rem;
+}
+
+.result-title {
+    color: var(--gold-400);
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    margin-bottom: 0.5rem;
+}
+
+.result-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ============ Result Card ============ */
+.result-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    text-align: left;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.result-avatar {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bg-raised), var(--bg-raised));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.result-info {
+    flex: 1;
+}
+
+.result-role {
+    color: var(--gold-300);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+}
+
+.result-thief-label {
+    display: inline-block;
+    background: rgba(245, 214, 123, 0.12);
+    border: 1px solid rgba(245, 214, 123, 0.25);
+    border-radius: 20px;
+    padding: 0.3rem 1rem;
+    font-size: 0.9rem;
+    color: var(--gold-400);
+    margin-bottom: 0.8rem;
+}
+
+.result-desc {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* ============ Result Actions ============ */
+.result-actions {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* ============ Quiz Divider ============ */
+.quiz-divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-400), transparent);
+    margin: 2rem auto;
+}
+
+/* ============ AI Advice Section ============ */
+.ai-advice-section {
+    text-align: center;
+}
+
+.ai-advice-title {
+    color: var(--text-primary);
+    font-size: 1.15rem;
+    margin-bottom: 1.2rem;
+}
+
+.ai-advice-box {
+    margin-top: 1.2rem;
+    min-height: 40px;
+    text-align: left;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+/* ============ Quiz Responsive ============ */
+@media (max-width: 768px) {
+    .quiz-section {
+        padding: 1rem;
+        margin: 2rem auto;
+    }
+
+    .quiz-wrapper {
+        padding: 1.5rem 1rem;
+    }
+
+    .quiz-question {
+        font-size: 1.1rem;
+    }
+
+    .quiz-option {
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .result-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .result-thief-label {
+        margin-top: 0.3rem;
+    }
+}

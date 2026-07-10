@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>这一夜 —— 一个中国家庭的睡眠切片</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- 样式（🎨 设计组：改 css/styles.css） -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- 数据 & 逻辑 -->
+    <script src="js/data.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/interactive.js"></script>
+    <script src="js/character-animator.js"></script>
+    <script src="js/main.js"></script>
+</head>
+
+<body>
+
+    <div id="scroll-progress"></div>
+    <nav id="nav-dots" aria-label="页面导航">
+        <a href="#cover" class="nav-dot active" title="封面"></a>
+        <a href="#family" class="nav-dot" title="家庭介绍"></a>
+        <a href="#scene-son" class="nav-dot" title="儿子"></a>
+        <a href="#scene-daughter" class="nav-dot" title="姐姐"></a>
+        <a href="#scene-father" class="nav-dot" title="父亲"></a>
+        <a href="#scene-mother" class="nav-dot" title="母亲"></a>
+        <a href="#scene-grandma" class="nav-dot" title="外婆"></a>
+        <a href="#data-summary" class="nav-dot" title="数据总览"></a>
+        <a href="#quiz" class="nav-dot" title="互动自测"></a>
+    </nav>
+    <button id="back-to-top" aria-label="回到顶部" title="回到顶部">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+    <div id="page-loading">
+        <span class="loading-icon">🌙</span>
+        <span class="loading-text">正在加载故事</span>
+        <span class="loading-dots"><i>.</i><i>.</i><i>.</i></span>
+    </div>
+
+    <!--
+      ═══════════════════════════════════════════════════════
+      文件分工说明：
+      - 下面直接写的 HTML → 🧑‍💼 协调员维护（封面/转场/图表/结尾/页脚）
+      - 带 id="comp-xxx" 的 → 自动从 components/ 加载（5个大场景）
+      ═══════════════════════════════════════════════════════
+    -->
+
+    <!-- ==================== 封面 ==================== -->
+    <!-- ✍️ 文案组编辑区域 -->
+    <section class="cover" id="cover">
+        <div class="cover-content fade-in">
+            <div class="data-hook">🌙 中国成年人睡眠困扰率 48.5%</div>
+            <h1>这一夜，<br>没有人睡好</h1>
+            <p class="subtitle">
+                同一个屋檐下。<br>五个人。五种失眠。
+            </p>
+        </div>
+        <div class="scroll-indicator">
+            <span>向下滚动，走进这个夜晚</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+            </svg>
+        </div>
+    </section>
+    <!-- ==================== 封面结束 ==================== -->
+
+    <!-- ==================== 家庭介绍 ==================== -->
+    <!-- 🎨 设计组：头像 SVG | ✍️ 文案组：名字/描述 -->
+    <section class="family-intro" id="family">
+        <h2 class="intro-headline">🕙 晚上十点。</h2>
+        <p class="intro-sub">🏠 一家人各自回到房间。<br>这个夜晚，才刚刚开始。</p>
+        <div class="character-cards">
+
+            <!-- 外婆 -->
+            <div class="char-card">
+                <div class="char-avatar grandma">
+                    <img src="images/characters/grandma/1.png" alt="外婆" data-character="grandma" data-context="avatar" />
+                </div>
+                <div class="char-name">👵 外婆</div>
+                <div class="char-role">67岁</div>
+                <div class="char-issue">窗外还是黑的。她已经醒了。</div>
+            </div>
+
+            <!-- 父亲 -->
+            <div class="char-card">
+                <div class="char-avatar father">
+                    <img src="images/characters/father/1.png" alt="父亲" data-character="father" data-context="avatar" />
+                </div>
+                <div class="char-name">👨 父亲</div>
+                <div class="char-role">45岁</div>
+                <div class="char-issue">💻 电脑准备关机。📱 手机又亮了。</div>
+            </div>
+
+            <!-- 母亲 -->
+            <div class="char-card">
+                <div class="char-avatar mother">
+                    <img src="images/characters/mother/1.png" alt="母亲" data-character="mother" data-context="avatar" />
+                </div>
+                <div class="char-name">👩 母亲</div>
+                <div class="char-role">42岁</div>
+                <div class="char-issue">终于躺下。脑子开始工作。</div>
+            </div>
+
+            <!-- 儿子 -->
+            <div class="char-card">
+                <div class="char-avatar son">
+                    <img src="images/characters/son/1.png" alt="儿子" data-character="son" data-context="avatar" />
+                </div>
+                <div class="char-name">👦 儿子</div>
+                <div class="char-role">16岁</div>
+                <div class="char-issue">📚 卷子还有一页。困意先到了。</div>
+            </div>
+
+            <!-- 姐姐 -->
+            <div class="char-card">
+                <div class="char-avatar daughter">
+                    <img src="images/characters/daughter/1.png" alt="姐姐" data-character="daughter" data-context="avatar" />
+                </div>
+                <div class="char-name">👧 姐姐</div>
+                <div class="char-role">21岁</div>
+                <div class="char-issue">📱 只是想看下消息。再看时间，一点了。</div>
+            </div>
+
+        </div>
+    </section>
+    <!-- ==================== 家庭介绍结束 ==================== -->
+
+    <!-- 转场 ① -->
+    <!-- ✍️ 文案组 -->
+    <div class="transition-line fade-in">
+        ⏰ 一个普通的夜晚。<br>
+        中国居民的睡眠时间，<br>正在一年一年缩短。
+    </div>
+
+    <!-- 图表 ①：睡眠趋势 -->
+    <div class="data-section">
+        <div class="fade-in" style="max-width:720px; margin: 0 auto; padding: 0 2rem;">
+            <p class="chart-lead">📉 过去十年，中国人均睡眠时长减少了近一小时。</p>
+            <div class="chart-container" style="height:380px;">
+                <canvas id="chartSleepTrend"></canvas>
+            </div>
+            <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+                数据来源：北京大学中国社会科学调查中心 · 中国家庭追踪调查（CFPS）
+            </p>
+        </div>
+    </div>
+
+    <!-- 转场 ② -->
+    <div class="transition-line fade-in">
+        📊 数据之外。<br>
+        是一个一个的人。<br>
+        一个一个的夜晚。
+    </div>
+
+    <!-- ===== 场景一：儿子（动态加载） ===== -->
+    <div id="comp-scene-son"></div>
+
+    <div class="section-ornament fade-in"><span class="dot"></span></div>
+
+    <!-- 图表 ②：学生睡眠 -->
+    <div class="data-section">
+        <div class="fade-in" style="max-width:720px; margin: 0 auto; padding: 0 2rem;">
+            <p class="chart-lead">🎒 青少年是睡眠不足的重灾区。</p>
+            <div class="chart-container" style="height:360px;">
+                <canvas id="chartStudentSleep"></canvas>
+            </div>
+            <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+                数据来源：国家卫健委《健康中国行动（2019-2030年）》推荐标准 vs 实际调查数据
+            </p>
+        </div>
+    </div>
+
+    <!-- 转场 ③ -->
+    <div class="transition-line fade-in">
+        😴 不是不困。<br>
+        是不想结束今天。
+    </div>
+
+    <!-- ===== 场景二：姐姐（动态加载） ===== -->
+    <div id="comp-scene-daughter"></div>
+
+    <div class="section-ornament fade-in"><span class="dot"></span></div>
+
+    <!-- 图表 ③：熬夜原因 -->
+    <div class="data-section">
+        <div class="fade-in" style="max-width:900px; margin: 0 auto; padding: 0 2rem;">
+            <p class="chart-lead">🦉 熬夜的理由很多，但代价只有一个。</p>
+            <div class="chart-container" style="height:520px;">
+                <canvas id="chartNightOwlReasons"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 转场 ④ -->
+    <div class="transition-line fade-in">
+        💻 电脑准备关机。<br>
+        📱 手机又亮了。
+    </div>
+
+    <!-- ===== 场景三：父亲（动态加载） ===== -->
+    <div id="comp-scene-parents"></div>
+
+    <!-- 转场 ⑤ -->
+    <div class="transition-line fade-in">
+        🛏️ 终于躺下。<br>
+        脑子里的待办事项，<br>还没有关掉。
+    </div>
+
+    <!-- ===== 场景四：母亲（动态加载） ===== -->
+    <div id="comp-scene-mother"></div>
+
+    <!-- 图表 ④：性别睡眠差异 -->
+    <div class="data-section">
+        <div class="fade-in" style="max-width:720px; margin: 0 auto; padding: 0 2rem;">
+            <p class="chart-lead">♀️ 女性的睡眠困扰率显著高于男性，尤其在中年阶段。</p>
+            <div class="gender-compare" id="genderCompare"></div>
+        </div>
+    </div>
+
+    <!-- 转场 ⑥ -->
+    <div class="transition-line fade-in">
+        🚪 她以为只有自己睡不着。<br>
+        路过儿子房间——<br>
+        💡 灯还亮着。
+    </div>
+
+    <!-- ===== 场景五：外婆（动态加载） ===== -->
+    <div id="comp-scene-grandma"></div>
+
+    <!-- 转场 ⑦ -->
+    <div class="transition-line fade-in">
+        🌅 天亮了。<br>
+        厨房开始有声音。
+    </div>
+
+    <!-- ===== 场景六：早晨（动态加载） ===== -->
+    <div id="comp-scene-morning"></div>
+
+    <div class="section-ornament fade-in"><span class="dot"></span></div>
+
+    <!-- ==================== 结尾 ==================== -->
+    <!-- ✍️ 文案组编辑区域 -->
+    <section class="scene-finale fade-in">
+        <div class="finale-text">
+            <h2>🌅 天亮以后。</h2>
+            <p style="color:var(--text-muted); margin-bottom:2.5rem; font-size:1.1rem;">大家还是会出门。</p>
+
+            <div class="poem-line">💼 上班。</div>
+            <div class="poem-line">📚 上学。</div>
+            <div class="poem-line">🛒 买菜。</div>
+            <div class="poem-line">🚇 赶地铁。</div>
+
+            <div class="closing">
+                生活继续。<br><br>
+                📊 数据会记录：<br>
+                🕐 几点睡。<br>
+                ⏳ 睡多久。<br>
+                🔄 醒几次。<br><br>
+                但数据之外。<br>
+                每一个数字，<br>
+                都是一个普通人的夜晚。<br><br>
+                或许，<br>
+                真正值得重新讨论的，<br>
+                不只是<strong>睡眠</strong>。<br><br>
+                而是，<br>
+                💭 我们为什么总要牺牲它。<br><br>
+                <span style="font-size:0.9rem; color:var(--text-secondary); line-height:2;">
+                🕐 今晚，试着早关灯30分钟。<br>
+                📵 把手机留在卧室外面。<br>
+                💬 或者，只是跟家人说一句"早点休息"。
+                </span>
+            </div>
+        </div>
+    </section>
+    <!-- ==================== 结尾结束 ==================== -->
+
+    <div class="section-ornament fade-in"><span class="dot"></span></div>
+
+    <!-- ==================== 数据总览 ==================== -->
+    <!-- 📊 数据组编辑区域 -->
+    <div class="data-section" id="data-summary">
+    <section class="data-summary fade-in">
+        <h2>他们不是一个人。</h2>
+        <p style="text-align:center; color:var(--text-muted); margin-bottom:2rem;">很多人的夜晚，都和他们一样 🌃</p>
+        <div class="data-row" style="margin-bottom:1.5rem;">
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">48.5%</span>
+                <span class="data-label">😵 成年人存在睡眠困扰</span>
+            </div>
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">7h</span>
+                <span class="data-label">⏱️ 中国人均睡眠时长</span>
+            </div>
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">51.1%</span>
+                <span class="data-label">♀️ 女性睡眠困扰率</span>
+            </div>
+            <div class="data-card" style="text-align:center;">
+                <span class="data-number">39%</span>
+                <span class="data-label">👵 老年人夜醒 ≥ 2 次</span>
+            </div>
+        </div>
+        <p class="chart-lead" style="margin-top:0.5rem;">📊 黄色曲线 = 睡眠困扰率（左轴）| 蓝色曲线 = 平均睡眠时长（右轴）</p>
+        <div class="chart-container" style="height:400px;">
+            <canvas id="chartAgeSleep"></canvas>
+        </div>
+        <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
+            数据来源：中国社科院社会学研究所《2024年中国睡眠指数报告》& 中国睡眠研究会《2025中国睡眠健康研究白皮书》
+        </p>
+        <p style="text-align:center; font-size:0.9rem; color:var(--text-secondary); margin-top:1rem; line-height:1.8;">
+            睡眠困扰率在<span style="color:#e8c564;">中年（36-45岁）达到峰值</span>——正是工作和家庭责任最重的阶段。<br>而在那之后，<span style="color:#6b9fff;">睡眠时长持续走低</span>，年龄本身也成了睡不好的理由。
+        </p>
+    </section>
+    </div>
+    <!-- ==================== 数据总览结束 ==================== -->
+
+    <!-- ===== 互动自测模块（动态加载）===== -->
+    <div id="comp-interactive-quiz">
+    <span id="quiz" style="display:block; height:0;"></span>
+</div>
+
+    <!-- ==================== 页脚 ==================== -->
+    <!-- 📊 数据组编辑区域 -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <h3>数据来源</h3>
+            <ul class="source-list">
+                <li>国家卫健委《健康中国行动（2019-2030年）》</li>
+                <li>北京大学 · 中国家庭追踪调查（CFPS）</li>
+                <li>中国睡眠研究会、华为运动健康《2025中国睡眠健康研究白皮书》</li>
+                <li>中国社会科学院社会学研究所《2024年中国睡眠指数报告》</li>
+                <li>喜临门睡眠研究院《中等收入群体睡眠研究报告》</li>
+                <li>瑞思迈 ResMed《2026年全球睡眠调查》</li>
+            </ul>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:2rem; text-align:center; opacity:0.5;">
+                2026年7月
+            </p>
+        </div>
+    </footer>
+    <!-- ==================== 页脚结束 ==================== -->
+
+    <!-- 滚动进度条 + 回到顶部 -->
+    <script>
+    (function(){
+        var bar = document.getElementById('scroll-progress');
+        var btn = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', function(){
+            var h = document.documentElement.scrollHeight - window.innerHeight;
+            if(bar && h > 0) bar.style.width = (window.scrollY / h * 100) + '%';
+            if(btn) btn.classList.toggle('visible', window.scrollY > 400);
+        }, {passive: true});
+
+        if(btn) btn.addEventListener('click', function(){
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    })();
+    </script>
+
+</body>
+
+</html>
